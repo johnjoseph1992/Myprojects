@@ -32,7 +32,7 @@ urlpatterns = [
     url(r'^loadcities$', views.loadcities, name='loadcities'),
     #url(r'^loadschools$', views.loadschools, name='loadschools'),
     url(r'^getfilteredleaderdata$', views.getfilteredleaderdata, name='getfilteredleaderdata'),
-    url(r'^pdf_view$', views.pdf_view, name='pdf_view'),
+    url(r'^pdf_view$', views.pdf_view, name='pdf_view'),fsdf
 
 
 
