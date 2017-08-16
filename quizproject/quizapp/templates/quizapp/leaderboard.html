@@ -1,0 +1,64 @@
+<div ng-controller="leaderboardController">
+	<div class="row">
+		<div class="col-md-12">
+		  <div style="height:50px;padding-top:3px;background-color: #eee;">
+		    <span style="padding-left:10px;font-weight:700;font-size:30;">Leaderboard</span>
+		  </div>
+	  	</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-4">
+			<label>Filter by:</label>
+			<select ng-options="filterobj as filterobj.type for filterobj in filterarr" ng-model="filtertypeselected" class="form-control" ng-change="getleaderdata()"></select>
+		</div>
+		<div class="col-md-4" ng-show="filtertypeselected.val=='CITY'">
+			<label>Select a city:</label>
+			<select ng-options="city for city in cities" ng-model="cityselected" class="form-control" ng-change="getfilteredleaderdata()"></select>
+		</div>
+		<div class="col-md-4" ng-show="filtertypeselected.val=='SCHOOL'">
+			<label>Select a school:</label>
+			<select ng-options="school as school.schoolname for school in schools" ng-model="schoolselected" class="form-control" ng-change="getfilteredleaderdata()"></select>
+		</div>
+	</div>
+
+	<div class="row" style="padding-top:10px;" ng-show="leaderdata.length > 0">
+		<div class="col-md-6" style="max-height: 400px;overflow-y:auto;padding-right: 3px;">   
+		  	<table class="table table-hover">
+			    <thead>
+			      <tr style="border-right:2px solid orange;border-left:2px solid orange;">
+			        <th>Sl no</th>
+			        <th>Student name</th>
+			        <th>School</th>
+			        <th>city</th>
+			        <th>Score</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr style="border-right:2px solid orange;border-left:2px solid orange;cursor:pointer;" ng-repeat="leader in leaderdata | orderBy : '-score'">
+			        <td>//$index + 1//</td>
+			        <td>//leader.username//</td>
+			        <td>//leader.school//</td>
+			        <td>//leader.city//</td>
+			        <td>//leader.score//</td>
+			      </tr>
+			    </tbody>
+		  	</table>
+	  	</div>
+	</div>
+
+	<style type="text/css">
+		.correct-answer{
+			border-left:3px solid green;
+		}
+
+		.wrong-answer{
+			border-left:3px solid darkred;
+		}
+
+		.quiz-selected{
+			border-left:2px solid orange;
+		}
+	</style>
+
+</div>

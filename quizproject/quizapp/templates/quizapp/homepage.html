@@ -1,0 +1,280 @@
+<html>
+	<head>
+		<title>Homepage</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	</head>
+
+	<body ng-app="myquizapp">
+		<nav class="navbar navbar-inverse">
+		  <div class="container-fluid" ng-controller="navbarController">
+		  	<div class="navbar-header">
+		      <a class="navbar-brand" href="#">QUIZAPP</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li ng-class="getClass('/home')"><a href="#!home">Home</a></li>
+		      <li ng-class="getClass('/startquiz')"><a href="#!startquiz">Start quiz</a></li>
+		      <li ng-class="getClass('/quizreport')"><a href="#!quizreport">Quiz report</a></li>
+		      <li ng-class="getClass('/leaderboard')"><a href="#!leaderboard">Leaderboard</a></li>
+		    </ul>
+
+		    <ul class="nav navbar-nav navbar-right">
+		    	<li><a href="#">{{usertype | title}}</a></li>
+		    	<li><a href="#"><span class="glyphicon glyphicon-user"></span> {{username | title}}</a></li>
+		    	<li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		    </ul>
+		  </div>
+		</nav>
+
+		<div class="row">
+			<div class="col-md-12" style="padding:10px 50px 10px 50px;">
+				<div ng-view class="cardstyle"></div>
+			</div>
+		</div>
+
+		<script>
+			var app = angular.module("myquizapp", ["ngRoute"]);
+
+			app.config(function($interpolateProvider) {
+			  $interpolateProvider.startSymbol('//');
+			  $interpolateProvider.endSymbol('//');
+			});
+
+			app.config(function($httpProvider) {
+				$httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    			$httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+			});
+
+
+			app.config(function($routeProvider) {
+			    $routeProvider
+			    .when("/", {
+			        templateUrl : "homeviewurl"
+			    })
+			    .when("/home", {
+			        templateUrl : "homeviewurl"
+			    })
+			    .when("/startquiz", {
+			        templateUrl : "startquizpage"
+			    })
+			    .when("/quizreport", {
+			        templateUrl : "quizreportpage"
+			    })
+			    .when("/leaderboard", {
+			        templateUrl : "leaderboard"
+			    });
+			});
+
+			app.controller('navbarController', function($scope, $http, $location) {
+				$scope.getClass = function (path) {
+				  return ($location.path().substr(0, path.length) === path) ? 'active' : '';
+				}
+			});
+
+			//start quiz controller
+			app.controller('startQuizController', function($scope, $http, $window) {
+		
+				$scope.questionobject = [];
+				$scope.options = [];
+				$scope.answeredvalue = "";
+				$scope.quizstarted = true;
+				$scope.questionid = "";
+				$scope.qno=1;
+				$scope.score=0;
+				$scope.quizpart = true;
+				$scope.questiontype = "";
+				$scope.currentquestionmark = 0;
+
+				$scope.startaquiz = function(){
+					$http({
+					        method : "POST",
+					        url : "startaquiz",
+					    }).then(function mySuccess(response) {
+					        $scope.questionobject = response.data.Question;
+					        $scope.options = response.data.Options;
+					        $scope.questiontype = response.data.qtype;
+					        $scope.currentquestionmark = response.data.currentqmark;
+					        $scope.quizstarted = false;
+					    }, function myError(response) {
+					        //alert(response.statusText);
+				    });
+				}
+
+				$scope.answerClicked = function(optionvalue){
+					$scope.answeredvalue = optionvalue;
+				}
+
+				$scope.skipClicked = function(){
+					$http({
+					        method : "POST",
+					        url : "skipanswer",
+					    }).then(function mySuccess(response) {
+					        $scope.questionobject = response.data.Question;
+					        $scope.options = response.data.Options;
+					        $scope.questiontype = response.data.qtype;
+					        $scope.currentquestionmark = response.data.currentqmark;
+					        $scope.score = response.data.score;
+					        if (response.data.qno > 5){
+					        	$scope.quizpart = false;
+					        	$scope.examtotal = response.data.examtotal;
+					        }
+					        $scope.qno = response.data.qno;
+					    }, function myError(response) {
+					        //alert(response.statusText);
+				    });
+					$scope.answeredvalue = "";
+				}
+
+				$scope.submitNextClicked = function(){
+					if($scope.questiontype == "ESSAY")
+						$scope.answeredvalue = $scope.essaytext;
+					if($scope.answeredvalue==""){
+						alert("Give an answer");
+						return;
+					}					
+					$http({
+					        method : "POST",
+					        url : "submitnext",
+					        data : {answeredvalue:$scope.answeredvalue}
+					    }).then(function mySuccess(response) {
+					        $scope.questionobject = response.data.Question;
+					        $scope.options = response.data.Options;
+					        $scope.questiontype = response.data.qtype;
+					        $scope.currentquestionmark = response.data.currentqmark;
+					        $scope.score = response.data.score;
+					        if (response.data.qno > 5){
+					        	$scope.quizpart = false;
+					        	$scope.examtotal = response.data.examtotal;
+					        }
+					        $scope.qno = response.data.qno;
+					    }, function myError(response) {
+					        //alert(response.statusText);
+				    });
+					$scope.answeredvalue = "";
+					$scope.essaytext = "";
+				}
+
+				$scope.getPDF = function(scorevalue, total){
+					$window.open('pdf_view?scorevalue='+scorevalue+'&totalvalue='+total, '_blank');
+				}
+
+			}); //start quiz controller end
+
+
+			//quiz report controller
+			app.controller('quizReportController', function($scope, $http) {
+
+				$scope.quizidobject = [];
+				$scope.quizdetails = [];
+				$scope.selectedquizid = null;
+
+				$scope.getallquiz = function(){
+					$http({
+					        method : "POST",
+					        url : "getallquiz",
+					    }).then(function mySuccess(response) {
+					        $scope.quizids = response.data.Quizids;
+					    }, function myError(response) {
+					        //alert(response.statusText);
+				    });
+				}
+				$scope.getallquiz();
+
+				$scope.tableRowClicked = function(quizidvalue, quizscorevalue){
+					$scope.selectedscorevalue = quizscorevalue;
+					$scope.selectedquizid = quizidvalue;
+					$http({
+					        method : "POST",
+					        url : "getquizdetails",
+					        data : {quizid: quizidvalue}
+					    }).then(function mySuccess(response) {
+					    	$scope.quizdetails = response.data.Quizdetails;
+					        //$scope.quizids = response.data.Quizids;
+					    }, function myError(response) {
+					        //alert(response.statusText);
+				    });
+				}
+
+			});
+
+
+			//leaderboard controller
+			app.controller('leaderboardController', function($scope, $http) {
+
+				$scope.filterarr = [{"type":"ALL","val":"ALL"},{"type":"CITY","val":"CITY"},{"type":"SCHOOL","val":"SCHOOL"}];
+				$scope.leaderdata = $scope.cities = [];
+
+				$scope.loadcities = function(){
+					$http({
+						        method : "POST",
+						        url : "loadcities",
+						    }).then(function mySuccess(response) {
+						        $scope.cities = response.data;
+						    }, function myError(response) {
+						        //alert(response.statusText);
+					    });
+				}
+				$scope.loadcities();
+
+				$scope.getschools = function(){
+					$http({
+						        method : "POST",
+						        url : "getschools",
+						    }).then(function mySuccess(response) {
+						        $scope.schools = response.data.Schools;
+						    }, function myError(response) {
+						        //alert(response.statusText);
+					    });
+				}
+				$scope.getschools();
+
+
+				//get all leaderboard
+				$scope.getleaderdata = function(){
+					$scope.leaderdata = [];
+					if($scope.filtertypeselected.val == "ALL"){
+						$http({
+						        method : "POST",
+						        url : "getleaderdata",
+						        data : {filtertype: $scope.filtertypeselected.val}
+						    }).then(function mySuccess(response) {
+						        $scope.leaderdata = response.data.Leader;
+						    }, function myError(response) {
+						        //alert(response.statusText);
+					    });
+					}
+				}
+
+				//get citywise leaderboard
+				$scope.getfilteredleaderdata = function(){
+					$scope.leaderdata = [];
+					if($scope.filtertypeselected.val == 'CITY')
+						$scope.schoolselected = {"schoolid":0,"schoolname":"noname"};
+					if($scope.filtertypeselected.val == 'SCHOOL')
+						$scope.cityselected = "";
+					$http({
+					        method : "POST",
+					        url : "getfilteredleaderdata",
+					        data : {filtertype: $scope.filtertypeselected.val, city: $scope.cityselected, schoolid:$scope.schoolselected.schoolid}
+					    }).then(function mySuccess(response) {
+					        $scope.leaderdata = response.data.Leader;
+					    }, function myError(response) {
+					        //alert(response.statusText);
+				    });
+				}
+
+			});
+		</script>
+
+		<style type="text/css">
+			.cardstyle{
+				border:1px solid gray;
+				padding:10px;
+				border-radius: 3px;
+			}
+		</style>
+	</body>
+</html>

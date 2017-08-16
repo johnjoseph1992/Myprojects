@@ -1,0 +1,99 @@
+<div ng-controller="startQuizController">
+	<div ng-show="quizpart"> <!--quiz part start-->
+		<div class="row">
+			<div class="col-md-12">
+			  <div style="height:50px;padding-top:3px;background-color: #eee;">
+			    <span style="padding-left:10px;font-weight:700;font-size:30;">Start a quiz</span>
+			  </div>
+		  	</div>
+		</div>
+
+		<div class="row" style="padding-top:10px;" ng-hide="quizstarted">
+			<div class="col-md-3">
+			  <div style="height:30px;padding-top:3px;">
+			    <span style="padding-left:10px;font-weight:700;font-size:15;">Question : //qno//</span>
+			  </div>
+		  	</div>
+
+		  	<div class="col-md-offset-2 col-md-3">
+			  <div style="height:30px;padding-top:3px;">
+			    <span style="padding-left:10px;font-weight:700;font-size:15;">Mark for the question : //currentquestionmark//</span>
+			  </div>
+		  	</div>
+
+		  	<div class="col-md-offset-2 col-md-2">
+			  <div style="height:30px;padding-top:3px;">
+			    <span style="padding-left:10px;font-weight:700;font-size:15;">Score obtained: //score//</span>
+			  </div>
+		  	</div>
+		</div>
+
+		<div class="row" style="padding-top:10px;" ng-show="quizstarted">
+			<div class="col-md-3">
+				<input type="button" value="Click here to start a quiz" class="form-control btn-success" ng-click="startaquiz()">
+			</div>
+		</div>
+
+		<div class="row" style="padding-top:10px;" ng-hide="quizstarted">
+			<div class="col-md-12">
+				<div ng-repeat="singlequestion in questionobject">//singlequestion.question//?</div>
+			</div>
+		</div>
+
+		<div ng-show="questiontype!='ESSAY'">
+			<div class="row" style="padding-top:10px;" ng-hide="quizstarted">
+				<div class="col-md-12">
+					<div ng-repeat="singleoption in options">
+						<label><input type="radio" name="optionanswered" ng-click="answerClicked(singleoption.option)">
+			             //singleoption.option//</label>
+		            </div>
+				</div>
+			</div>
+		</div>
+
+		<div ng-show="questiontype=='ESSAY'">
+			<div class="row" style="padding-top:10px;" ng-hide="quizstarted">
+				<div class="col-md-12">
+					<textarea rows="4" ng-model="essaytext">
+					</textarea> 
+				</div>
+			</div>
+		</div>
+
+		<div class="row" style="padding-top:10px;" ng-hide="quizstarted">
+			<div class="col-md-2">
+				<input type="button" value="Skip" class="form-control btn-success" ng-click="skipClicked()">
+			</div>
+
+			<div class="col-md-2">
+				<input type="button" value="Submit and next" class="form-control btn-success" ng-click="submitNextClicked()">
+			</div>
+		</div>
+	</div> <!--quiz part end-->
+
+	<div ng-hide="quizpart">
+		<div class="row">
+			<div class="col-md-12">
+			  <div style="height:50px;padding-top:3px;background-color: #eee;">
+			    <span style="padding-left:10px;font-weight:700;font-size:30;">Scores obtained</span>
+			  </div>
+		  	</div>
+		</div>
+
+		<div class="row" style="padding-top:10px;">
+			<div class="col-md-12">
+				<div ng-repeat="singlequestion in questionobject">You scored //score// out of //examtotal-currentquestionmark// points from //qno - 1// Questions.</div>
+			</div>
+		</div>
+
+		<div class="row" style="padding-top:10px;">
+			<div class="col-md-2">
+				<a href="#!home" style="text-decoration: none;"><input type="button" value="Go to home" class="form-control btn-success"></a>
+			</div>
+
+			<div class="col-md-2">
+				<input type="button" value="Get certificate" class="form-control btn-success" ng-click="getPDF(score,examtotal)" ng-show="score > 2">
+			</div>
+		</div>
+	</div>
+</div>

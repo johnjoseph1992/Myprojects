@@ -1,0 +1,60 @@
+<div ng-controller="quizReportController">
+	<div class="row">
+		<div class="col-md-12">
+		  <div style="height:50px;padding-top:3px;background-color: #eee;">
+		    <span style="padding-left:10px;font-weight:700;font-size:30;">Quiz reports</span>
+		  </div>
+	  	</div>
+	</div>
+
+	<div class="row" style="padding-top:10px;">
+		<div class="col-md-2" style="max-height: 400px;overflow-y:auto;padding-right: 3px;">   
+		  	<table class="table table-hover">
+			    <thead>
+			      <tr  style="border-right:2px solid gray;">
+			        <th>Select a quiz</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr style="border-right:2px solid gray;cursor:pointer;" ng-repeat="quiz in quizids" ng-click="tableRowClicked(quiz.quizid, quiz.score)" ng-class="{'quiz-selected':selectedquizid==quiz.quizid}">
+			        <td>Quiz //$index + 1//</td> 
+			      </tr>
+			    </tbody>
+		  	</table>
+	  	</div>
+
+	  	<div class="col-md-10">
+	  		<center><label style="padding-top: 10px;font-size:30px;">Quiz details</label></center>
+	  		<br><span style="float:right;font-weight:bold;font-size:17px;">Scored: //selectedscorevalue//</span>
+	  		<div class="row" style="padding-top:10px;">
+	  			<div class="col-md-offset-1 col-md-12">
+					<div ng-repeat="quizdetail in quizdetails" style="font-size:19px;padding-top: 30px;">
+						<div style="padding-left:10px;" ng-class="{'correct-answer':quizdetail.status==true, 'wrong-answer':quizdetail.status==false}">
+							//$index+1//) //quizdetail.question//?
+							<div class="row">
+								<div class="col-md-12" style="padding-top:5px;">
+									A) //quizdetail.answeredoption//
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	  	</div>
+	</div>
+
+	<style type="text/css">
+		.correct-answer{
+			border-left:3px solid green;
+		}
+
+		.wrong-answer{
+			border-left:3px solid darkred;
+		}
+
+		.quiz-selected{
+			border-left:2px solid orange;
+		}
+	</style>
+
+</div>

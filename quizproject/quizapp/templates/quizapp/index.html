@@ -1,0 +1,35 @@
+<html>
+	<head>
+		<title>Quiz Login</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<form method="POST" action="loginrequest">
+		{% csrf_token %}
+			<div class="row"> <!--row1 start-->
+				<div class="col-md-offset-4 col-md-4">
+					<div class="panel panel-primary" style="margin-top:25%;">
+	      				<div class="panel-heading"><h4>Provide username and password</h4></div>
+	      				<div class="panel-body">
+	      					<div class="form-group">
+	      						<label>Username:</label>
+								<input type="text" name="uname" class="form-control"><br>
+								<label>Password:</label>
+								<input type="password" name="pwd" class="form-control">
+								<span style="color:red;">{{loginmsg}}</span><br>
+								<div class="row">
+									<div class="col-md-6">
+										<input type="submit" value="Login" class="form-control btn-success">
+									</div>
+									<div class="col-md-6">
+										<a href="signuppage" style="text-decoration: none;"><input type="button" value="Signup" class="form-control btn-info"></a>
+									</div>
+								</div>
+							</div>
+						</div>
+				</div>
+			</div> <!--row1 end-->
+		</form>
+	</body>
+</html>

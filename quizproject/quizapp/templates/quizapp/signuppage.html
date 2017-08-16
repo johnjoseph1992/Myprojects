@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Signup</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	</head>
+	<body ng-app="signupapp" ng-controller="signupcontroller">
+		<div class="row"> <!--row1 start-->
+			<div class="col-md-offset-4 col-md-4">
+				<div class="panel panel-primary" style="margin-top:5%;">
+      				<div class="panel-heading"><h4>Sign Up</h4></div>
+      				<div class="panel-body">
+      					<div class="form-group">
+      						<form name="signform">
+	      						<label>Username:</label>
+								<input type="text" name="uname" class="form-control" value="{{uservalue}}" ng-model="uname" ng-pattern="/^[a-zA-Z]+$/" required>
+								<span ng-show="signform.uname.$error.required && signform.uname.$touched" style="color:red;">Username required.</span>
+								<span ng-show="!signform.uname.$error.required && signform.uname.$invalid" style="color:red;">Proper username required.</span><br>
+
+								<label>Password:</label>
+								<input type="password" name="pwd" class="form-control" ng-model="pwd" required>
+								<span ng-show="signform.pwd.$error.required && signform.pwd.$touched" style="color:red;">Password required.</span><br>
+								<label>Confirm Password:</label>
+								<input type="password" name="confirmpwd" class="form-control" ng-model="confirmpwd" required>
+								<span ng-show="signform.confirmpwd.$error.required && signform.confirmpwd.$touched" style="color:red;">Password required.</span>
+								<span ng-show="signform.confirmpwd.$valid && signform.pwd.$valid && confirmpwd!=pwd" style="color:red;">Passwords does not match.</span><br>
+								<!--<span style="color:red;">{{errmsg}}</span>-->
+
+								<label>Select a school:</label>
+								<select ng-options="school as school.schoolname for school in schools" ng-model="schoolselected" class="form-control" name="schoolselected" required></select>
+								<span ng-show="signform.schoolselected.$error.required && signform.schoolselected.$touched" style="color:red;">School required.</span><br>
+
+								<label>City:</label>
+								<input type="text" name="city" class="form-control" ng-model="city" ng-pattern="/^[a-zA-Z]+$/" required>
+								<span ng-show="signform.city.$error.required && signform.city.$touched" style="color:red;">City required.</span>
+								<span ng-show="!signform.city.$error.required && signform.city.$invalid" style="color:red;">Proper cityname required.</span><br>
+
+								<label>Select user type:</label>
+								<select class="form-control" ng-model="usertype" name="usertype" required>
+									<option value="TEACHER">TEACHER</option>
+									<option value="STUDENT">STUDENT</option>
+								</select>
+								<span ng-show="signform.usertype.$error.required && signform.usertype.$touched" style="color:red;">Usertype required.</span><br>
+
+								<label>Select standard:</label>
+								<select ng-options="std for std in standardlist" ng-model="standard" class="form-control" ng-disabled="usertype =='TEACHER'" name="standard"></select><br>
+
+								<div class="row">
+									<div class="col-md-6">
+										<input type="button" value="Signup" class="form-control btn-success" ng-click="signupClicked()">
+									</div>
+
+									<div class="col-md-6">
+										<a href="loginpage" style="text-decoration: none;"><input type="button" value="Login" class="form-control btn-info"></a>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+			</div>
+		</div> <!--row1 end-->
+
+		<script>
+			var signupapp = angular.module("signupapp", []);
+
+			signupapp.config(function($interpolateProvider) {
+			  $interpolateProvider.startSymbol('//');
+			  $interpolateProvider.endSymbol('//');
+			});
+
+			signupapp.config(function($httpProvider) {
+				$httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    			$httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+			});
+
+			signupapp.controller('signupcontroller', function($scope, $http) {
+				$scope.schools = [];
+				$scope.standardlist = [1,2,3,4,5,6,7,8,9,10,12];
+
+				$scope.loadInitData = function(){
+					$http({
+					        method : "GET",
+					        url : "getschools",
+					    }).then(function mySuccess(response) {
+					        $scope.schools = response.data.Schools;
+					    }, function myError(response) {
+					        //alert(response.statusText);
+				    });
+				}
+				$scope.loadInitData();
+
+			    $scope.signupClicked = function(){
+			    	if($scope.usertype=="TEACHER")
+			    		$scope.standardvalue = "";
+			    	else
+			    		$scope.standardvalue = $scope.standard;
+			    	$http({
+					        method : "POST",
+					        url : "signuprequest",
+					        data: {uname: $scope.uname, pwd: $scope.pwd, confirmpwd: $scope.confirmpwd, selectedschool:$scope.schoolselected.schoolid, usertype:$scope.usertype, std:$scope.standardvalue, city:$scope.city}
+					    }).then(function mySuccess(response) {
+					        if(response.data == "success"){
+					        	alert("User successfully registered.");
+					        }
+					        else
+					        	alert(response.data);
+					    }, function myError(response) {
+					        alert(response.statusText);
+				    });
+			    }
+			});
+
+		</script>
+	</body>
+</html>
