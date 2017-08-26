@@ -1,0 +1,104 @@
+<div ng-controller="subCategoryRegCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Subcategory Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form name="frmSubcat">
+						<div class="row">
+							<div class="col-md-3">
+									<div class="form-group">
+										<label>Subcategory Name</label>
+										<input type="text" class="form-control" placeholder="Name" name="subcat_name_model" ng-model="subcat_name_model" ng-pattern="/^[a-z A-Z]+$/" required>
+										<span style="color:red;" ng-show="frmSubcat.subcat_name_model.$touched && frmSubcat.subcat_name_model.$error.required">Subcategory name required.</span>
+										<span style="color:red;" ng-show="frmSubcat.subcat_name_model.$dirty && frmSubcat.subcat_name_model.$error.pattern">Only alphabets are required.</span>
+									</div>
+											
+								
+							</div>
+							<div class="col-md-offset-1 col-md-3">
+								<div class="form-group">
+									<label>Select Maincategory</label>
+									<select class="form-control" ng-model="maincat_select_model" name="maincat_select_model" required>
+										<option ng-repeat="single_maincat in maincats | orderBy : 'maincatname'" value="//single_maincat.maincatid//">//single_maincat.maincatname | uppercase//</option>
+									</select>
+									<span style="color:red;" ng-show="frmSubcat.maincat_select_model.$touched && frmSubcat.maincat_select_model.$error.required">Maincategory required.</span>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<input type="button" class="btn btn-info btn-fill" value="Submit" ng-click="subCategorySubmit()" ng-disabled="frmSubcat.subcat_name_model.$invalid || frmSubcat.maincat_select_model.$invalid">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="clearClicked()">
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_subcat_model">
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table table-hover table-striped" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Subcategory Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Maincategory Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="single_subcat in all_subcat | filter: customFilter(search_subcat_model) | orderBy : 'subcat_name'" style="border-bottom:2px solid #dddddd;">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+																		<td><p ng-hide="edit_data[single_subcat.subcat_id]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_subcat.subcat_name//</p><input type="text" class="form-control" ng-show="edit_data[single_subcat.subcat_id]" ng-model="single_subcat.subcat_name" autofocus /></td>
+
+																		<td>
+																			<p ng-hide="edit_data[single_subcat.subcat_id]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_subcat.maincat_name//</p>
+																			<select class="form-control" ng-model="single_subcat.maincat_id" ng-show="edit_data[single_subcat.subcat_id]" ng-options="single_maincat.maincatid as single_maincat.maincatname for single_maincat in maincats | orderBy : 'maincatname'">																	
+																			</select>
+																		</td>
+
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Update"><button type="button" ng-show="edit_data[single_subcat.subcat_id]" class="btn btn-info btn-fill" value="Update" ng-click="updaterecord(single_subcat)" style="float:right;">Update</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Delete"><button type="button" ng-show="edit_data[single_subcat.subcat_id]" class="btn btn-info btn-fill" ng-click="locationdelete(single_subcat)" style="float:right;" value="Delete">Delete</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Cancel"><button type="button" ng-show="edit_data[single_subcat.subcat_id]" class="btn btn-info btn-fill" ng-click="stopmodifyrecord(single_subcat)" value="Cancel" style="float:right;">Cancel</button></a></td>
+
+																		<td style="width:50px;"><p ng-hide="checkeditable(single_subcat)"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" ng-hide="edit_data[single_subcat.subcat_id]" class="btn btn-success btn-circle2" value="Edit" ng-click="modifyrecord(single_subcat)" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></p></td>
+
+																	</tr>
+																</tbody>
+															</table>
+														</div>	
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->
+
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

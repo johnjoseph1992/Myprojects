@@ -1,0 +1,130 @@
+//controller for purchase Registration...
+		app.controller("purchaseRegistrationCtrl", function($scope, $http) {
+			$scope.showIfConsumableDiv=true;
+			$scope.showIfAssetDiv=false;
+			$scope.showIfConsumableAssembledNotExist=false;
+			$scope.showIfExisting=false;
+
+			//load the selectbox with MainCategory names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainCategory/"
+				}).then(function mySucces(response) {
+					$scope.main_cat_names = response.data.MainCategory;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+			//load the selectbox with Brand Details...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadBrandDetails/"
+				}).then(function mySucces(response) {
+					$scope.brand_details = response.data.BrandDetails;
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with supplier Names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSupplierNames/"
+				}).then(function mySucces(response) {
+					$scope.all_suppliers = response.data.Supplier;
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with item_id and fisat_id...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadItemNames/"
+				}).then(function mySucces(response) {
+					$scope.all_items = response.data.ItemMaster;
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+
+			//show parts depends on whether Asset or Consumable....
+			$scope.switchMainCategory = function(){
+				if($scope.select_maincategory_model == "1"){ //consumable ...
+					//$scope.showIfConsumableDiv=true;
+					$scope.showIfAssetDiv=false;
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+				if($scope.select_maincategory_model == "2"){ //assets ...
+					$scope.showIfAssetDiv=true;
+					//$scope.showIfConsumableDiv=false;
+					$scope.showIfConsumableAssembledNotExist=false;
+					
+					//for proper vallidation...
+					if(($scope.Assembled == "Yes") && ($scope.Existing == "No")){
+						$scope.showIfConsumableAssembledNotExist=true;
+					}
+					else{
+						$scope.showIfConsumableAssembledNotExist=false;
+					}
+				}
+			}
+			
+			//show consumable parts depends on whether Assembled and not Existing....
+			$scope.checkForAssembledNotExist = function(){
+				if($scope.Existing == "No"){
+					$scope.showIfExisting=true;
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+				else{
+					$scope.showIfExisting=false;
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+				if(($scope.Assembled == "Yes") && ($scope.Existing == "No") && ($scope.select_maincategory_model == "2")){
+					$scope.showIfConsumableAssembledNotExist=true;
+				}
+				else{
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+			}
+			
+			
+			//Add items if Consumable Assembled and Not Existing....
+			$scope.items = [];
+			$scope.addItem = function () {
+				$scope.errortext = "";
+				if (!$scope.addMe) {return;}
+				if ($scope.items.indexOf($scope.addMe.toUpperCase()) == -1) {
+					$scope.items.push($scope.addMe.toUpperCase());
+				} else {
+					$scope.errortext = "Location Already Present";
+				}
+			}
+			$scope.removeItem = function (x) {
+				$scope.errortext = "";    
+				$scope.items.splice(x, 1);
+			}
+
+			//click submit button...
+			$scope.submitPurchasedItem = function () {	
+				var jsonAssembledSubItems=angular.toJson($scope.items);
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/submitPurchasedItem/",
+					params: {brand_id: $scope.select_brand_name_model,main_cat_id: $scope.select_maincategory_model, qty_available:$scope.nos_available_model,item_name_description: $scope.item_desc_model,assembled: $scope.Assembled,existing: $scope.Existing,purchase_date: $scope.purch_date_model,supplier_name: $scope.supp_name_model,assembled_sub_items: jsonAssembledSubItems}
+
+				  }).then(function mySucces(response) {
+						if(response.data == "success"){
+							alert("Data saved successfully");
+						}
+						else{
+							alert(response.data);
+						}
+					});
+			}//button click end
+
+		});//controller for purchase Registration end...

@@ -1,0 +1,39 @@
+app.controller('supplierRejCtrl', function($scope, $http) {
+		alert("gfwegwe");
+		$scope.supplierSubmit = function(){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/supplier/",
+					params: {sup_name: $scope.sup_name_model , place: $scope.place_model, city: $scope.city_model, dist: $scope.dist_model, state: $scope.state_model, mail: $scope.mail_model, phone: $scope.phone_model, vat: $scope.vat_model}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						if(response.data == "success"){
+							document.getElementById("modalHead").innerHTML = "Success";
+							document.getElementById("modalBody").innerHTML = "Data Saved Successfully.";
+							$("#showModal").modal();
+						}
+						else{
+							document.getElementById("modalHead").innerHTML = "Failed";
+							document.getElementById("modalBody").innerHTML = response.data;
+							$("#showModal").modal();
+						}
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				  });
+			}
+
+
+		$scope.supplierCancel = function(){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/responseMsg/"
+				}).then(function mySucces(response) {
+					$scope.users_logins = response.data.Logintab;
+				}, function myError(response) {
+					//$scope.myWelcome = response.statusText;
+				});  
+			}
+
+
+		});

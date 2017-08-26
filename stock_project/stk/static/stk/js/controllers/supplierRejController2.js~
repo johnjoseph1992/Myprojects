@@ -1,0 +1,384 @@
+app.controller('supplierRejCtrl', function($scope, $http) {
+
+			$scope.updateSupplierPart = false;
+
+			//manage tabs start...
+			$scope.registerSupplierTabPart=true;
+			$scope.viewSupplierTabPart=false;
+
+			$scope.registerSupplierTabClicked = function(){
+				$scope.registerSupplierTabPart=true;
+				$scope.viewSupplierTabPart=false;
+				$scope.updateSupplierPart = false;
+			}
+
+			$scope.viewSupplierTabClicked = function(){
+				$scope.registerSupplierTabPart=false;
+				$scope.viewSupplierTabPart=true;
+			}
+			//manage tabs end...
+
+
+
+			//load supplier details with rating for graph...
+			var xarr = [], yarr = [];
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadAllSupplierDetails/"
+
+				  }).then(function mySucces(response) {
+						$scope.all_suppliers_details = response.data.Supplier;
+						for(i=0;i < $scope.all_suppliers_details.length;i++){
+							xarr[i]=$scope.all_suppliers_details[i].supplier_name;
+							yarr[i]=$scope.all_suppliers_details[i].rating;
+						}
+						//for(i=0;i<yarr.length;i++){alert(yarr[i]);}
+						/*var data = [
+						  {
+							x: xarr,
+							y: yarr,
+							type: 'scatter' ///scatter,bar
+						  }
+						];*/
+
+						var data = [
+						  {
+							values: yarr,
+							labels: xarr,
+							type: 'pie' 
+						  }
+						];
+
+						var layout = {
+						  xaxis: {title: 'Rating'},
+						  yaxis: {title: 'Suppliers', type: 'log'},
+						  //margin: {t: 30},
+						  hovermode: 'closest'
+						};
+
+						Plotly.newPlot('graphdiv', data,layout);
+
+					}, function myError(response) {
+				});
+			//graph end...
+
+
+			//load pichart button...
+			$scope.loadPiChart = function(){
+				var data = [
+							  {
+								values: yarr,
+								labels: xarr,
+								type: 'pie' 
+							  }
+							];
+
+							var layout = {
+							  xaxis: {title: 'Rating'},
+							  yaxis: {title: 'Suppliers', type: 'log'},
+							  //margin: {t: 30},
+							  hovermode: 'closest'
+							};
+
+							Plotly.newPlot('graphdiv', data,layout);
+			}//load pi end...
+
+		
+			//load bar chart button...
+			$scope.loadBarChart = function(){
+				var data = [
+							  {
+								x: xarr,
+								y: yarr,
+								type: 'bar' ///scatter,bar
+							  }
+							];
+
+							/*var data = [
+							  {
+								values: yarr,
+								labels: xarr,
+								type: 'pie' 
+							  }
+							];*/
+
+							var layout = {
+							  xaxis: {title: 'Rating'},
+							  yaxis: {title: 'Suppliers', type: 'log'},
+							  //margin: {t: 30},
+							  hovermode: 'closest'
+							};
+
+							Plotly.newPlot('graphdiv', data,layout);
+			}//bar chart end...
+
+	
+			$scope.loadLineChart = function(){
+				var data = [
+							  {
+								x: xarr,
+								y: yarr,
+								type: 'bar' ///scatter,bar
+							  }
+							];
+
+							/*var data = [
+							  {
+								values: yarr,
+								labels: xarr,
+								type: 'pie' 
+							  }
+							];*/
+
+							var layout = {
+							  xaxis: {title: 'Rating'},
+							  yaxis: {title: 'Suppliers', type: 'log'},
+							  //margin: {t: 30},
+							  hovermode: 'closest'
+							};
+
+							Plotly.newPlot('graphdiv', data,layout);
+			}
+
+
+			//initially load view table to show all supplier...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/searchSupplier/",
+					params: {filter: "ALL", keyword:""}
+
+				  }).then(function mySucces(response) {
+						$scope.supplier_details = response.data.Supplier;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			//loading end...
+
+
+		$scope.update_brand_details = [];
+		//load the selectbox with Brand Details...
+		$http({
+				method : "GET",
+				url : "http://stock.fisat.edu:8000/stockapp/loadFullBrandDetails/"
+			}).then(function mySucces(response) {
+				$scope.brand_details = response.data.BrandDetails;
+				$scope.update_brand_details = response.data.BrandDetails;//it is in update section
+				//alert(response.data);
+			}, function myError(response) {
+
+			});//loading selectbox end...
+
+
+
+		var selected_brand_object,selected_brand_index;
+		$scope.setSelectedItem = function(brand_object,brand){
+			selected_brand_object=brand_object;
+			selected_brand_index=brand;//assign $index value for splicing
+			//alert(brand_object.brand_id);
+		}
+
+
+		$scope.supply_items = [];
+		//add item to table part...
+		$scope.addItem = function(){
+			if (!$scope.addMe) {return;}
+			$scope.supply_items.push({brand_name:selected_brand_object.brand_name, model_name:selected_brand_object.model_name, specification:selected_brand_object.specification, capacity:selected_brand_object.capacity, unit:selected_brand_object.unit, sub_cat_name:selected_brand_object.sub_cat_name, brand_id:selected_brand_object.brand_id});
+			$scope.brand_details.splice(selected_brand_index, 1);//don't want to see the added items in selectbox
+			selected_brand_object=null;//to reset the value
+			selected_brand_index=null;//to reset value
+		}
+		//adding end...
+		//Remove item...
+		$scope.removeItem = function (item,item_object) {
+				$scope.supply_items.splice(item, 1);
+				$scope.brand_details.push(item_object);//add removed item to selectbox...
+			}
+		//remove end...
+		
+
+
+		$scope.supplierSubmit = function(){
+
+				var json_all_supply_items=angular.toJson($scope.supply_items);
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/supplier/", //it is view function supplierRej
+					params: {sup_name: $scope.sup_name_model , place: $scope.place_model, city: $scope.city_model, dist: $scope.dist_model, state: $scope.state_model, mail: $scope.mail_model, phone: $scope.phone_model, vat: $scope.vat_model, all_supply_items_json:json_all_supply_items}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						if(response.data == "success"){
+							//alert("Supplier Registered Successfully.");
+							document.getElementById("modalHead").innerHTML = "Success";
+							document.getElementById("modalBody").innerHTML = "Data Saved Successfully.";
+							$("#showModal").modal();
+						}
+						else{
+							document.getElementById("modalHead").innerHTML = "Failed";
+							document.getElementById("modalBody").innerHTML = response.data;
+							$("#showModal").modal();
+						}
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				  });
+			}
+
+
+		$scope.supplierCancel = function(){
+				$scope.supply_items = [];//reset table
+				selected_brand_object=null;//to reset the value
+				selected_brand_index=null;//to reset value
+				//load the selectbox with Brand Details...
+				$http({
+						method : "GET",
+						url : "http://stock.fisat.edu:8000/stockapp/loadFullBrandDetails/"
+					}).then(function mySucces(response) {
+						$scope.brand_details = response.data.BrandDetails;
+						//alert(response.data);
+					}, function myError(response) {
+
+					});//loading selectbox end...
+
+				
+			}
+
+		//searching suppliers begin...
+		$scope.searchSupplier = function(filter_by,search_keyword){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/searchSupplier/",
+					params: {filter: filter_by, keyword:search_keyword}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						$scope.supplier_details = response.data.Supplier;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			}
+		//search end...
+
+
+		$scope.update_supply_items = [];
+		//main table row clicked begin...
+		$scope.mainTableRowClicked = function(supplier_object){
+			$scope.update_sup_name_model = supplier_object.supplier_name;
+			$scope.update_state_model = supplier_object.state;
+			$scope.update_place_model = supplier_object.place;
+			$scope.update_mail_model = supplier_object.mail_id;
+			$scope.update_city_model = supplier_object.city;
+			$scope.update_phone_model = supplier_object.phone;
+			$scope.update_dist_model = supplier_object.district;
+			$scope.update_vat_model = supplier_object.vat_no;
+			$scope.supplier_id_for_update=supplier_object.supplier_id
+			$scope.updateSupplierPart = true;
+
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/getSupplyItemsFromSupplierId/",
+					params: {supplier_id: supplier_object.supplier_id}
+
+				  }).then(function mySucces(response) {
+						$scope.update_supply_items = response.data.SupplyItemsBrand;
+						/*for(i=0;i<$scope.update_supply_items.length;i++){
+							alert($scope.update_supply_items[i].brand_id);
+						}*/
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+		}
+		//main table row clicked end...
+
+		var selected_update_brand_object,selected_update_brand_index;
+		$scope.setSelectedItemInUpdate = function(brand_object,brand){
+			selected_update_brand_object = brand_object;
+			selected_update_brand_index = brand;
+		}
+
+		//update section add button clicked..
+		$scope.addItemInUpdate = function(){
+			if (!$scope.updateAddMe) {return;}
+			for(i=0;i<$scope.update_supply_items.length;i++){
+				//alert($scope.update_supply_items[i].brand_id + " " + selected_update_brand_object.brand_id);
+				if($scope.update_supply_items[i].brand_id == selected_update_brand_object.brand_id){
+					$scope.errortextUpdate = "Item Already Added";
+					return;
+				}
+			}
+			$scope.update_supply_items.push({brand_name:selected_update_brand_object.brand_name, model_name:selected_update_brand_object.model_name, specification:selected_update_brand_object.specification, capacity:selected_update_brand_object.capacity, unit:selected_update_brand_object.unit, sub_cat_name:selected_update_brand_object.sub_cat_name, brand_id:selected_update_brand_object.brand_id});
+			$scope.errortextUpdate = "";
+			//$scope.update_brand_details.splice(selected_brand_index, 1);//don't want to see the added items in selectbox
+			selected_brand_object=null;//to reset the value
+			selected_brand_index=null;//to reset value
+		}
+		//add button click end...
+
+
+		//Remove item...
+		$scope.removeItemInUpdate = function (item,item_object) {
+				$scope.update_supply_items.splice(item, 1);
+				//$scope.brand_details.push(item_object);//add removed item to selectbox...
+			}
+		//remove end...
+
+		
+		//function to update supplier...
+		$scope.supplierUpdate = function(){
+			var json_all_supply_items=angular.toJson($scope.update_supply_items);
+			$scope.updateSupplierPart = false;
+			//supplier update update...
+			$http({
+				method : "GET",
+				url : "http://stock.fisat.edu:8000/stockapp/supplierUpdate/",
+				params: {sup_id: $scope.supplier_id_for_update, sup_name: $scope.update_sup_name_model , place: $scope.update_place_model, city: $scope.update_city_model, dist: $scope.update_dist_model, state: $scope.update_state_model, mail: $scope.update_mail_model, phone: $scope.update_phone_model, vat: $scope.update_vat_model, all_supply_items_json:json_all_supply_items}
+
+			   }).then(function mySucces(response) {
+				// $scope.myResponse = response.data;
+				if(response.data == "success"){
+					//alert("Supplier Registered Successfully.");
+					document.getElementById("modalHead").innerHTML = "Success";
+					document.getElementById("modalBody").innerHTML = "Supplier Updated Successfully.";
+					$("#showModal").modal();
+					//location.reload(); //for refreshing results
+				}
+				else{
+					document.getElementById("modalHead").innerHTML = "Failed";
+					document.getElementById("modalBody").innerHTML = response.data;
+					$("#showModal").modal();
+				}
+			   }, function myError(response) {
+				// $scope.myResponse = response.statusText;
+			});//http for supplier update end...
+
+
+			//reload view table to show updated supplier details...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/reloadSuppliersAfterUpdate/"
+					//params: {filter: "ALL", keyword:""}
+
+				  }).then(function mySucces(response) {
+						$scope.supplier_details = response.data.Supplier;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+			});
+			//reloading end...
+
+		}//update function end...
+
+
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+

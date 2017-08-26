@@ -1,0 +1,88 @@
+<div ng-controller="firmRegCtrl">
+	<div class="row fadeineffect"><!--ROW1 START-->
+		<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+							<h4 class="title">Firm Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form name="frmFirm">
+						<div class="row">
+							<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+								<div class="row">
+									<div class="col-md-7">
+										<div class="form-group">
+											<label>Firm Name</label>
+											<input type="text" class="form-control" placeholder="Name" name="firm_submit_model" ng-model="firm_submit_model" ng-pattern="/^[a-z A-Z]+$/" required>
+											<span style="color:red;" ng-show="frmFirm.firm_submit_model.$touched && frmFirm.firm_submit_model.$error.required">Firm name required.</span>
+											<span style="color:red;" ng-show="frmFirm.firm_submit_model.$dirty && frmFirm.firm_submit_model.$error.pattern">Only alphabets are required.</span>
+										</div>
+									</div>
+								</div>
+											
+								<div class="form-group">
+									<input type="button" class="btn btn-info btn-fill" value="Submit" ng-click="firmSubmit()" ng-disabled="frmFirm.firm_submit_model.$invalid">&nbsp;&nbsp;
+									<a href="#home"><input type="button" class="btn btn-info btn-fill" value="Cancel"></a>
+								</div>
+							</div>
+						</div>
+					
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table table-hover table-striped" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Firm Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="firm in all_firms | filter:{firmname:search_model}" style="border-bottom:2px solid #dddddd;">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+																		<td><p ng-hide="edit_data[firm.firmid]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//firm.firmname//</p><input type="text" ng-show="edit_data[firm.firmid]" ng-model="firm.firmname" class="form-control" style="max-width:400px;" autofocus /></td>
+																
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Update"><button type="button" ng-show="edit_data[firm.firmid]" class="btn btn-info btn-fill" ng-click="firmupdate(firm)" style="float:right;" value="Update">Update</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Delete"><button type="button" ng-show="edit_data[firm.firmid]" class="btn btn-info btn-fill" ng-click="firmdelete(firm)" style="float:right;" value="Delete">Delete</button></a></td>	
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Cancel"><button type="button" ng-show="edit_data[firm.firmid]" class="btn btn-info btn-fill" ng-click="stopmodifyfirm(firm)" value="Cancel">Cancel</button></a>
+</td>
+																		<td style="width:50px;"><p ng-hide="checkeditable(firm)"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" ng-hide="edit_data[firm.firmid]" class="btn btn-success btn-circle2" value="Edit" ng-click="modifyfirm(firm)" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></p></td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>	
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->		
+
+		            </form>
+		        </div>
+				
+		    </div>
+		</div>
+	</div><!--ROW1 END-->
+
+</div>

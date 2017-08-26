@@ -1,0 +1,107 @@
+<div ng-controller="connectStoreDeptCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Connect Department to Store</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form name="frmConnectDept">
+						<div class="row">
+							<div class="col-md-4">
+									<div class="form-group">
+										<label>Select Department</label>
+										<select class="form-control" ng-model="dept_select_model" name="dept_select_model" required>
+											<option ng-repeat="single_dept in depts | orderBy : 'department_name'" value="//single_dept.did//">//single_dept.department_name | uppercase//</option>
+										</select>
+										<span style="color:red;" ng-show="frmConnectDept.dept_select_model.$touched && frmConnectDept.dept_select_model.$error.required">Dept required.</span>
+									</div>
+											
+								
+							</div>
+							<div class="col-md-offset-1 col-md-4">
+								<div class="form-group">
+									<label>Select Store</label>
+									<select class="form-control" ng-model="store_select_model" name="store_select_model" required>
+										<option ng-repeat="single_store in all_stores | orderBy : 'mainstorename'" value="//single_store.storeid//">//single_store.mainstorename | uppercase//</option>
+									</select>
+									<span style="color:red;" ng-show="frmConnectDept.store_select_model.$touched && frmConnectDept.store_select_model.$error.required">Store required.</span>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<input type="button" class="btn btn-info btn-fill" value="Submit" ng-click="connectDeptStoreSubmit()" ng-disabled="frmConnectDept.dept_select_model.$invalid || frmConnectDept.store_select_model.$invalid">&nbsp;&nbsp;
+							<a href="#home"><input type="button" class="btn btn-info btn-fill" value="Cancel"></a>
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_connect_dept_model">
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table table-hover table-striped" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Department Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Store Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="store_dept_data in all_store_dept_data | filter: customFilter(search_connect_dept_model) | orderBy : 'department_name'" style="border-bottom:2px solid #dddddd;">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//store_dept_data.department_name//</p></td>
+
+																		<td>
+																			<p ng-hide="edit_data[store_dept_data.dept_id]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//store_dept_data.mainstore_name//</p>
+																			<select class="form-control" ng-model="store_dept_data.store_id" ng-show="edit_data[store_dept_data.dept_id]" ng-options="single_store.storeid as single_store.mainstorename for single_store in all_stores | orderBy : 'mainstorename'">
+																	<!--<option ng-options="single_store.mainstorename for single_store in all_stores | orderBy : 'mainstorename'" value="//single_store.storeid//">//single_store.mainstorename | uppercase//</option>
+																	<option ng-repeat="single_store in all_stores | orderBy : 'mainstorename'" value="//single_store.storeid//">//single_store.mainstorename | uppercase//</option>-->
+																			</select>
+																		</td>
+
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Update"><button type="button" ng-show="edit_data[store_dept_data.dept_id]" class="btn btn-info btn-fill" value="Update" ng-click="recordupdate(store_dept_data)" style="float:right;">Update</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Delete"><button type="button" ng-show="edit_data[store_dept_data.dept_id]" class="btn btn-info btn-fill" ng-click="recorddelete(store_dept_data)" style="float:right;" value="Delete">Delete</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Cancel"><button type="button" ng-show="edit_data[store_dept_data.dept_id]" class="btn btn-info btn-fill" ng-click="stopmodifyrecord(store_dept_data)" value="Cancel" style="float:right;">Cancel</button></a></td>
+
+																		<td style="width:50px;"><p ng-hide="checkeditable(store_dept_data)"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" ng-hide="edit_data[store_dept_data.dept_id]" class="btn btn-success btn-circle2" value="Edit" ng-click="modifyrecord(store_dept_data)" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></p></td>
+
+																	</tr>
+																</tbody>
+															</table>
+														</div>	
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->
+
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

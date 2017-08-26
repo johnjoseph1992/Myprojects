@@ -1,0 +1,104 @@
+app.controller("hodApproveCtrl", function($scope,$http) {
+			$scope.all_requests = [];
+			$scope.subTableDiv = false;
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainRequestInfo/",
+					params: {req_status: "new"}
+				}).then(function mySucces(response) {
+					$scope.all_requests = response.data.RequestsMain;
+				}, function myError(response) {
+
+				});
+				
+				
+			$scope.requestMainClicked = function(full_request_object, main_index_value){//main table row clicked...
+				$scope.subTableDiv = true;
+				$scope.name_of_requester = full_request_object.requester_name;
+				$scope.dept_of_requester = full_request_object.dept_name;
+				$scope.location_of_requester = full_request_object.location_name;
+				$scope.total_approx_cost = full_request_object.approx_cost;
+				$scope.main_index = main_index_value;
+				$scope.full_req_id=full_request_object.full_req_id;
+				
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSubRequestInfoFromFullId/",  
+					params: {full_req_id: full_request_object.full_req_id}
+				}).then(function mySucces(response) {
+					$scope.all_sub_requests = response.data.RequestsSub;
+				}, function myError(response) {
+
+				});
+			}
+
+			
+			$scope.approveRequestHod = function(){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/approveRequestHod/",  
+					params: {full_req_id: $scope.full_req_id}
+				}).then(function mySucces(response) {
+					if(response.data == "success"){
+						alert("Request Approved Successfully");				
+					}
+					else{
+						alert(response.data);
+					}	
+				}, function myError(response) {
+
+				});//http end...
+
+				$scope.subTableDiv = false;
+				
+				//reload main table...
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainRequestInfo/",
+					params: {req_status: "new"}
+				}).then(function mySucces(response) {
+					$scope.all_requests = response.data.RequestsMain;
+				}, function myError(response) {
+
+				});
+				
+			}
+
+			
+			$scope.rejectRequestHod = function(){
+				if($scope.rejectReason == null){
+					alert("Please provide a rejection reason.");
+					return;
+				}
+
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/rejectRequestHod/",  
+					params: {full_req_id: $scope.full_req_id, reject_req_reason: $scope.rejectReason}
+				}).then(function mySucces(response) {
+					if(response.data == "success"){
+						alert("Request Rejected Successfully");				
+					}
+					else{
+						alert(response.data);
+					}	
+				}, function myError(response) {
+
+				});//http end...
+				
+				$scope.subTableDiv = false;
+
+				//reload main table...
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainRequestInfo/",
+					params: {req_status: "new"}
+				}).then(function mySucces(response) {
+					$scope.all_requests = response.data.RequestsMain;
+				}, function myError(response) {
+
+				});
+
+			}
+		
+		});

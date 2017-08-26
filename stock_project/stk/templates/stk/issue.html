@@ -1,0 +1,140 @@
+<div ng-controller="issueCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Issue Item</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showSupplierBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form> <p ng-hide="true">//selected_issue_id// //selected_issue_obj//</p>
+						<div class="row"><!--row start-->
+							<div class="col-md-3">
+								<label>To Department</label>
+								<input type="text" class="form-control"  ng-model="selectedDept"  typeahead-on-select="deptSelectChanged()" typeahead-min-length="0" uib-typeahead="dept as dept.department_name for dept in depts | filter: $viewValue | orderBy : 'department_name' | limitTo:8" typeahead-select-on-exact="true" placeholder="Department name" typeahead-editable='false' typeahead-no-results="noDepts" ng-click="deptClicked()" ng-blur="deptLostFocus()">
+								<div ng-show="noDepts" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<label>To Location</label>
+								<input type="text" class="form-control"  ng-model="selectedLocation"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="location as location.location_name for location in locations | filter: $viewValue | orderBy : 'location_name' | limitTo:8" typeahead-select-on-exact="true" placeholder="Location name" typeahead-editable='false' typeahead-no-results="noLocations" ng-blur="locationLostFocus()">
+								<div ng-show="noLocations" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-2">
+								<label>Subcategory</label>
+								<!-- <select class="form-control" ng-model="subcat_select_model" ng-options="single_subcat.subcat_id as single_subcat.subcat_name for single_subcat in subcats | orderBy : 'subcat_name'" ng-change="subcatSelectChanged()" ng-disabled="delButton">
+								</select> -->
+								<input type="text" class="form-control"  ng-model="selectedSubcat"  typeahead-on-select="subcatSelectChanged()" typeahead-min-length="0" uib-typeahead="single_subcat as single_subcat.subcat_name for single_subcat in subcats | filter: $viewValue | orderBy : 'subcat_name' | limitTo:8" typeahead-select-on-exact="true" placeholder="Subcategory" typeahead-editable='false' typeahead-no-results="noSubcats" ng-click="" ng-disabled="delButton" ng-blur="subcatLostFocus()">
+								<div ng-show="noSubcats" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:92%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>Item</label>
+								<input type="text" class="form-control"  ng-model="selectedItem"  typeahead-on-select="itemSelected()" typeahead-min-length="0" uib-typeahead="item as item.item_name for item in all_items | filter: customFilterForItem($viewValue) | orderBy : 'item_name' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Item name" typeahead-editable='false' typeahead-no-results="noItems" ng-disabled="delButton" ng-blur="itemLostFocus()">
+								<div ng-show="noItems" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+						</div><!--row end-->
+
+						<div class="row">
+							<div class="col-md-4">
+								<label>Quantity</label>
+								<input type="number" class="form-control" style="padding-right:1px;" placeholder="Quantity" ng-model="issue_qty_model" ng-change="qtyChanged()">
+							</div>
+
+							<div class="col-md-4">
+								<label>Unit</label>
+								<select class="form-control" ng-model="unit_select_model" ng-options="single_unit.unit_id as single_unit.unit_name for single_unit in units | orderBy : 'unit_name'">
+								</select>
+							</div>
+
+							<div class="col-md-4">
+								<label>Maincategory</label>
+								<select class="form-control" ng-model="maincat_select_model" ng-options="single_maincat.maincat_id as single_maincat.maincat_name for single_maincat in maincats | orderBy : 'maincat_name'">
+								</select>
+							</div>
+
+						</div>
+						
+						<p></p>
+						<div class="form-group">
+							<button type="button" class="btn btn-info btn-fill" ng-click="issueSubmit()">//btnTxt//</button>&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Cancel" ng-show="delButton" ng-click="issueDelete()">
+							<span ng-show="delButton">&nbsp;&nbsp;</span>
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="clearClicked()">&nbsp;&nbsp;
+							<p style="float:right;font-weight:bold;" ng-show="checkAvailableStatus()">Available:&nbsp;//selectedItem.qty_available//</p>
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+													  <div style=""><!-- padding div start -->
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table hovertable" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Issue Date</b></th>
+																	<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Item Name</b></th>
+																	<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Quantity</b></th>
+																	<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">To Dept</b></th>
+																	<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Issued By</b></th>
+																	<th style="border-bottom:3px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>															
+																	<tr ng-repeat="issue in all_issues | filter:customFilterForIssue(search_model) | orderBy: 'issuedate' as filtered_result" on-finish-render="issueNgRepeatFinished"style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="issueTableRowClicked(issue)" ng-class="{'tab-selected-row': issue.issueid == selectedIID}">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$ind=$index + 1//</p></td>															
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//issue.issuedate//</p></td>
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//issue.itemname//</p></td>
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//issue.issuedqty//</p></td>
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//issue.issueddeptname//</p></td>
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//issue.issuedbyempcode//</p></td>
+
+																		<td style="max-width:30px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></td>
+																	</tr>
+																</tbody>
+															</table>
+															<!-- NO data msg start-->
+															<div ng-show="loadingPart" style="height:25px;">
+																&nbsp;<i class="fa fa-spinner fa-pulse" style="color:green;"></i> Loading...         
+															</div>
+															<div ng-show="nodataPart" style="height:25px;">
+																&nbsp;//errorMsg//.         
+															</div>
+															<!-- NO data msg end-->
+														</div>
+													  </div><!-- padding div end -->
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->			
+					
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,59 @@
+app.controller("issueItemCtrl", function($scope,$http) {
+
+		$scope.subRequestPart = false;
+
+
+		//load main requests to first table...
+		$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainRequestInfoToIssueItem/"
+				}).then(function mySucces(response) {
+					$scope.all_requests = response.data.RequestsMain;
+				}, function myError(response) {
+
+		}); //loading end...
+
+
+		//load the selectbox with item_id and fisat_id...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadItemNames/"
+				}).then(function mySucces(response) {
+					$scope.all_items = response.data.ItemMaster;
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+		
+		
+		$scope.requestMainClicked = function(full_request_object, main_index_value){//main table row clicked...
+				
+				$scope.subRequestPart = true;
+				$scope.full_request_id_for_quotation = full_request_object.full_req_id;
+				//load request info to selectbox...
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSubRequestInfoFromFullIdToIssueItem/",  
+					params: {full_req_id: full_request_object.full_req_id}
+				}).then(function mySucces(response) {
+					$scope.all_sub_requests = response.data.RequestsSub;
+				}, function myError(response) {
+
+				}); //loading end...
+			}
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+

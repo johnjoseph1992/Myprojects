@@ -1,0 +1,112 @@
+//controller for requesting of items(purchase request)...
+		app.controller("purchaseRequestCtrl", function($scope,$http) {
+			all_sub_categories= [];
+			all_brand_details = [];
+
+			//load the selectbox in purchase request with SubCategory names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSubCategory/"
+				}).then(function mySucces(response) {
+					$scope.req_sub_cat_names = response.data.SubCategory;
+					all_sub_categories = response.data.SubCategory;//for loading static table with sub_cat_names
+				}, function myError(response) {
+
+			});//loading selectbox end...
+
+
+			//get all Brand Details...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadBrandDetails/"
+				}).then(function mySucces(response) {
+					$scope.brand_details = response.data.BrandDetails;
+					all_brand_details= response.data.BrandDetails;//used for loading brand name to static table depends on selected brand_id
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//getting end...
+
+
+
+			//load the selectbox with Brand Details depending on selected subcategory...
+			$scope.loadProductNames = function(){
+				$http({
+						method : "GET",
+						url : "http://stock.fisat.edu:8000/stockapp/loadBrandForSubCat/",
+						params: {selected_subcat_id: $scope.select_category_purch_req_model}
+					}).then(function mySucces(response) {
+						$scope.req_brand_details = response.data.BrandDetails;
+						//alert(response.data);
+					}, function myError(response) {
+
+					});
+			}//loading selectbox end...
+
+
+			//load subcategory names to static table based on selected id...
+			$scope.subcatFromId = function(category_id){
+					for(var i=0;i < all_sub_categories.length;i++){
+						if(all_sub_categories[i].sub_cat_id == category_id)
+							return all_sub_categories[i].sub_cat_name;
+					}
+				}
+
+			//load brand name to static table based on selected id...
+			$scope.brandFromId = function(product_id){
+				for(var i=0;i < all_brand_details.length;i++){
+					if(all_brand_details[i].brand_id == product_id)
+						return all_brand_details[i].brand_name+" "+all_brand_details[i].model_name+" "+all_brand_details[i].specification+" "+all_brand_details[i].capacity+" "+all_brand_details[i].unit;
+				}
+			}
+	
+
+			//Add requests to static table....
+			var total_cost = 0, old_cost_value = 0;
+			var sub_cat_name, product_name;
+			$scope.totalCost = total_cost;
+			$scope.requests = [];//stores request objects as array(contains id of category and product names)
+
+			//add button click...
+			$scope.addRequest = function () {
+				$scope.requests.push({productName:$scope.select_product_name_model, category:$scope.select_category_purch_req_model, needRequest:$scope.select_need_req_model, approxCost:$scope.select_cost_model, qtyRequired:$scope.select_qty_model});
+				old_cost_value = total_cost;//temporarily storing old value
+				total_cost += parseFloat($scope.select_cost_model); 
+				if(isNaN(total_cost)){//if blank or string is inserted at cost
+					total_cost = old_cost_value;
+				}
+				$scope.totalCost = total_cost;
+			}
+			$scope.removeRequest = function (req) {	
+				total_cost -= parseFloat($scope.requests[req].approxCost); 
+				$scope.totalCost = total_cost;
+				$scope.requests.splice(req, 1);
+			}
+			
+			
+			//submitting list of requests to server...
+			$scope.submitPurchaseRequests = function(){
+				var json_all_requests=angular.toJson($scope.requests);
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/requestSubmit/",
+					params: {all_requests_json: json_all_requests}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						if(response.data == "success"){
+							document.getElementById("modalHead").innerHTML = "Success";
+							document.getElementById("modalBody").innerHTML = "Data Saved Successfully.";
+							$("#showModal").modal();
+						}
+						else{
+							document.getElementById("modalHead").innerHTML = "Failed";
+							document.getElementById("modalBody").innerHTML = response.data;
+							$("#showModal").modal();
+						}
+					}, function myError(response) {
+					
+				});//http end...
+			}//submit purchase request end...
+		
+		});//purchaseRequestCtrl end...

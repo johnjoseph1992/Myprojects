@@ -1,0 +1,471 @@
+<div ng-controller="adminHomeCtrl"><!--controller begin-->
+	<div class="row fadeineffect"><!--CONTAINER ROW BEGIN-->
+
+		<div class="row" ng-show="store_select_part"><!--STORE SELECT ROW BEGIN-->
+			<div class="col-md-12">
+				<div class="row">
+					<div class="col-md-offset-4 col-md-4 col-md-offset-4">
+						<div class="form-group">
+							<center><label>Select a store</label></center>
+							<select class="form-control" ng-model="store_select_model" ng-change="">
+								<option ng-repeat="single_store in stores | orderBy : 'mainstorename'" value="//single_store.storeid//">//single_store.mainstorename | uppercase//</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<br>
+				<div class="row">
+					<div class="col-md-offset-5 col-md-4 ">
+						<div class="form-group">
+							<input type="button" class="btn btn-info btn-fill" value="Confirm Store" ng-click="selectStoreClicked(store_select_model)">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Cancel" ng-click="clearFunction()">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div><!--STORE SELECT ROW END-->
+
+
+		<div class="row" ng-show="home_part"> <!--ICON ROW 0 BEGIN-->
+		   <div class="col-lg-3 col-sm-6">
+			<a href="#firm" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5 inner-hover">
+                                        <div class="icon-big icon-warning text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-database"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Firm&nbsp;<span class="badge" style="background-color: #1DC7EA;">//firm_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Firm Registration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#mainStore" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-success text-center" style="color:#4cae4c">
+                                            <i class="pe-7s-note2"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Main&nbsp;<span class="badge" style="background-color: #1DC7EA;">//main_store_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Mainstore Registration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+
+					<div class="col-lg-3 col-sm-6">
+						<a href="#connectStoreDept" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-info text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-shopping-cart"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Dept&nbsp;<span class="badge" style="background-color: #1DC7EA;">//dept_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Connect Dept And Store
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+						</a>
+                    </div>
+
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#location" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center" style="color:#4cae4c">
+                                            <i class="fa fa-product-hunt"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                           	<p>Location&nbsp;<span class="badge" style="background-color: #1DC7EA;">//location_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Location Registration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    
+		</div><!--ICON ROW 0 END-->
+
+
+		<div class="row" ng-show="home_part"> <!--ICON ROW 1 BEGIN-->
+		   <div class="col-lg-3 col-sm-6">
+			<a href="#unit" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5 inner-hover">
+                                        <div class="icon-big icon-warning text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-database"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Unit&nbsp;<span class="badge" style="background-color: #1DC7EA;">//unit_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Unit Registration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#subcat" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-success text-center" style="color:#4cae4c">
+                                            <i class="pe-7s-note2"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Subcategory&nbsp;<span class="badge" style="background-color: #1DC7EA;">//subcat_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Subcategory Registration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#item" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center" style="color:#4cae4c">
+                                            <i class="fa fa-product-hunt"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                           	<p>Item&nbsp;<span class="badge" style="background-color: #1DC7EA;">//item_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Item Registration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#supplier" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-info text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-shopping-cart"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Suppliers&nbsp;<span class="badge" style="background-color: #1DC7EA;">//sup_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Supplier Registration
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+		</div><!--ICON ROW 1 END-->
+
+
+		
+		<div class="row" ng-show="home_part"> <!--ICON ROW 2 BEGIN-->
+		   <div class="col-lg-3 col-sm-6">
+			<a href="#purchase" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-warning text-center"  style="color:#4cae4c">
+                                            <i class="pe-7s-plugin"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Total&nbsp;<span class="badge" style="background-color: #1DC7EA;">//total_purchase_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Purchase
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#issue" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-success text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-external-link"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <!--<p>Total&nbsp;<span class="badge" style="background-color: #1DC7EA;">36</span></p>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Issue Item
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#existing" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-cart-arrow-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            	<!--<p>Brand&nbsp;<span class="badge" style="background-color: #1DC7EA;">97</span></p>
+						<p>Items&nbsp;<span class="badge" style="background-color: #1DC7EA;">200</span></p>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Register Existing Item
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                       <a href="#purchReturn" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-line-chart"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Purchase Return
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+		</div>  <!--ICON ROW 2 END-->
+
+
+
+		<div class="row" ng-show="home_part"> <!--ICON ROW 3 BEGIN-->
+		   <div class="col-lg-3 col-sm-6">
+			<a href="#returnDept" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-warning text-center"  style="color:#4cae4c">
+                                            <i class="pe-7s-plugin"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <p>Total&nbsp;<span class="badge" style="background-color: #1DC7EA;">//total_purchase_count_var//</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Return From Department
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#outgoing" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-success text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-external-link"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            <!--<p>Total&nbsp;<span class="badge" style="background-color: #1DC7EA;">36</span></p>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Outgoing Items
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+			<a href="#miscellaneous" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-cart-arrow-down"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                            	<!--<p>Brand&nbsp;<span class="badge" style="background-color: #1DC7EA;">97</span></p>
+						<p>Items&nbsp;<span class="badge" style="background-color: #1DC7EA;">200</span></p>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Miscellaneous
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                       <a href="#purchReturn" style="color:#9A9A9A;">
+                        <div class="card card-hover">
+                            <div class="content inner-hover">
+                                <div class="row">
+                                    <div class="col-xs-5">
+                                        <div class="icon-big icon-danger text-center"  style="color:#4cae4c">
+                                            <i class="fa fa-line-chart"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-7">
+                                        <div class="numbers">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer">
+                                    <hr />
+                                    <div class="stats">
+                                        Purchase Return
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+			</a>
+                    </div>
+		</div>  <!--ICON ROW 3 END-->
+		
+                 
+
+              
+	</div><!--CONTAINER ROW END-->
+</div><!--controller end-->
+

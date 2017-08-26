@@ -1,0 +1,58 @@
+<style>
+ul > button{
+	padding: 2px 5px;
+}
+</style>
+
+<div ng-controller="SearchController">
+<div>seleted state: //selected//</div>
+        <input type="text" ng-change="onedit()"  ng-model="selected" uib-typeahead="state for state in states | filter:$viewValue | limitTo:8">
+	<br>Enter EmpCode:
+	<input type="text" class="form-control" placeholder="Quantity" ng-model="sample_model"><br>
+	<input type="button" class="btn btn-info btn-fill" value="Save" ng-click="sampleSubmit()">&nbsp;&nbsp;
+	<a href="#item"><input type="button" class="btn btn-info btn-fill" value="Add new item" ng-click="addnew()"></a>&nbsp;&nbsp;
+	<input type="button" class="btn btn-info btn-fill" value="Back" ng-click="backclick()">&nbsp;&nbsp;
+
+
+	<!--EXCEL FILE UPLOAD START-->
+	</br></br>
+	<form action="readXls" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+		Select excel file to upload:
+		<input type="file" name="file">
+		<input type="submit" value="Upload Excel File" name="submit" class="btn btn-info btn-fill">
+	</form>
+	<!--EXCEL FILE UPLOAD END-->
+
+
+	</br></br>Datepicker: //dt//</br>
+	<div class="input-group">
+          <input type="text" class="form-control" uib-datepicker-popup ng-model="dt" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+    	</div>
+
+	</br></br>ADM DATEPICKER: //date3//
+	<adm-dtp ng-model='date3' options='{ autoClose: true, format: "YYYY/MM/DD", default: today, multiple:false, dtpType: "date", freezeInput:true }'></adm-dtp>
+
+	<label class="checkbox">
+        	<span class="icons"><span class="first-icon fa fa-square-o"></span><span class="second-icon fa fa-check-square-o"></span></span><input value="" data-toggle="checkbox" type="checkbox"><span style="color:black;">gdsgdfgdf</span>
+        </label>
+	
+	<checkbox large ng-model="checkboxModel"></checkbox>//checkboxModel//
+
+</div> <!--CONTROLLER END-->
+
+
+
+
+
+
+
+
+
+
+
+
+

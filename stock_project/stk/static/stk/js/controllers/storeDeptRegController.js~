@@ -1,0 +1,240 @@
+//code to add department sublocations....
+		app.controller("storeDeptRegCtrl", function($scope, $http) {
+			$scope.sub_locations = [];
+			$scope.locationPart = false;
+			$scope.mainStoreUpdatePart = false;
+
+			//manage tabs...
+			$scope.mainStoreRegisterTab = true;
+			$scope.deptRegisterTab = false;
+			$scope.subCatRegisterTab = false;
+			$scope.mainStoreDetailsTab = false;
+			$scope.deptDetailsTab = false;
+
+			$scope.mainStoreRegisterTabClicked = function(){
+				$scope.mainStoreRegisterTab = true;
+				$scope.deptRegisterTab = false;
+				$scope.subCatRegisterTab = false;
+				$scope.mainStoreDetailsTab = false;
+				$scope.deptDetailsTab = false;
+			}
+
+			$scope.deptRegisterTabClicked = function(){
+				$scope.mainStoreRegisterTab = false;
+				$scope.deptRegisterTab = true;
+				$scope.subCatRegisterTab = false;
+				$scope.mainStoreDetailsTab = false;
+				$scope.deptDetailsTab = false;
+			}
+
+			$scope.subCatRegisterTabClicked = function(){
+				$scope.mainStoreRegisterTab = false;
+				$scope.deptRegisterTab = false;
+				$scope.subCatRegisterTab = true;
+				$scope.mainStoreDetailsTab = false;
+				$scope.deptDetailsTab = false;
+			}
+
+			$scope.mainStoreDetailsTabClicked = function(){
+				$scope.mainStoreRegisterTab = false;
+				$scope.deptRegisterTab = false;
+				$scope.subCatRegisterTab = false;
+				$scope.mainStoreDetailsTab = true;
+				$scope.deptDetailsTab = false;
+			}
+
+			$scope.deptDetailsTabClicked = function(){
+				$scope.mainStoreRegisterTab = false;
+				$scope.deptRegisterTab = false;
+				$scope.subCatRegisterTab = false;
+				$scope.mainStoreDetailsTab = false;
+				$scope.deptDetailsTab = true;
+			}
+			//manage tabs...
+
+
+			//load the selectbox with mainstore names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainstores/"
+				}).then(function mySucces(response) {
+					$scope.main_stores = response.data.StoreMaster;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+			//load the selectbox with mainstore names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadDeptNames/"
+				}).then(function mySucces(response) {
+					$scope.depts = response.data.Dept;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+			
+
+			//click mainstore submitbutton of store registration...
+			$scope.mainstoreSubmit = function (){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/mainstoreRegistration/",
+					params: {submit_mainstore: $scope.mainstore_submit_model}
+
+				  }).then(function mySucces(response) {
+						if(response.data == "success"){
+							alert("Data successfully saved.");
+
+							//load (refresh) the selectbox with mainstore names after submited successfully...
+							$http({
+								method : "GET",
+								url : "http://stock.fisat.edu:8000/stockapp/loadMainstores/"
+							}).then(function mySucces(response) {
+								$scope.main_stores = response.data.StoreMaster;
+							}, function myError(response) {
+								//$scope.myWelcome = response.statusText;
+							});//loading selectbox end...
+						}
+					}, function myError(response) {
+					  //$scope.myResponse = response.statusText;
+				  });
+			}
+			//mainstore submit end...
+
+
+			$scope.addItem = function () {
+				$scope.errortext = "";
+				if (!$scope.addMe) {return;}
+				if ($scope.sub_locations.indexOf($scope.addMe.toUpperCase()) == -1) {
+					$scope.sub_locations.push($scope.addMe.toUpperCase());
+				} else {
+					$scope.errortext = "Location Already Present";
+				}
+			}
+			$scope.removeItem = function (x) {
+				$scope.errortext = "";    
+				$scope.sub_locations.splice(x, 1);
+			}
+
+			//click department,subdept submitbutton of store registration --> dept registration...
+			$scope.deptSubdeptSubmit = function(){
+				var jsonSubLocations=angular.toJson($scope.sub_locations);
+				//var objectToSerialize={'sublocations':jsonSubLocations};
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/deptRegistration/",
+					params: {sublocations: jsonSubLocations,dept_name: $scope.dept_name_model, select_mainstore: $scope.select_mainstore_model}
+
+				  }).then(function mySucces(response) {
+						if(response.data == "success"){
+							alert("Data saved successfully");
+						}
+						else{
+							alert(response.data);
+						}
+					}, function myError(response) {
+					  //$scope.myResponse = response.statusText;
+				  });
+			}//deptSubdeptSubmit() end...
+
+	
+			//submit sub category...
+			$scope.subcatSubmit = function(){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/subcategoryRegistration/",
+					params: {sub_cat_name: $scope.subcat_submit_model}
+
+				  }).then(function mySucces(response) {
+						if(response.data == "success"){
+							alert("Data successfully saved.");
+						}
+						else{
+							alert(response.data);
+						}
+					}, function myError(response) {
+					  //$scope.myResponse = response.statusText;
+				  });
+			}
+
+			//load update part
+			$scope.mainStoreRowClicked = function(mainstore_object, index_value){
+				$scope.selected_mainstore_id = mainstore_object.main_store_id
+				$scope.selected_main_store_name_update = mainstore_object.main_store_name
+				$scope.mainstore_update_model = mainstore_object.main_store_name
+				$scope.mainStoreUpdatePart = true;
+			}
+
+			//load update part
+			$scope.deptRowClicked = function(dept_object, index_value){
+				$scope.selected_dept_id = dept_object.dept_id
+				$scope.selected_dept = dept_object.dept_name
+				$scope.locationPart = true;
+
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSubLocationNames/",
+					params: {dept_id: dept_object.dept_id}
+
+				  }).then(function mySucces(response) {
+						$scope.locations = response.data.Location;
+					}, function myError(response) {
+					  //$scope.myResponse = response.statusText;
+				  });
+			}
+	
+
+			$scope.updateMainStore = function(){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/updateMainStore/",
+					params: {new_main_store_name: $scope.mainstore_update_model, main_store_id: $scope.selected_mainstore_id}
+
+				  }).then(function mySucces(response) {
+						if(response.data == "success"){
+							alert("Data Updated Successfully.");
+							$scope.mainStoreUpdatePart = false;
+						}
+						else{
+							alert(response.data);
+						}
+					}, function myError(response) {
+					  //$scope.myResponse = response.statusText;
+				  });
+
+					//load the selectbox with mainstore names...
+					$http({
+							method : "GET",
+							url : "http://stock.fisat.edu:8000/stockapp/loadMainstores/"
+						}).then(function mySucces(response) {
+							$scope.main_stores = response.data.StoreMaster;
+						}, function myError(response) {
+
+						});//loading selectbox end...
+			}
+
+
+		}); //controller end...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

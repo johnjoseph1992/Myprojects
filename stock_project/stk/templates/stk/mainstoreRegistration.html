@@ -1,0 +1,121 @@
+<div ng-controller="mainstoreRegCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Mainstore Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form name="frmMainStore">
+						<div class="row">
+							<div class="col-md-4">
+									<div class="form-group">
+										<label>Mainstore Name</label>
+										<input type="text" class="form-control" placeholder="Name" name="mainstore_name_model" ng-model="mainstore_name_model" ng-pattern="/^[a-z A-Z]+$/" required>
+										<span style="color:red;" ng-show="frmMainStore.mainstore_name_model.$touched && frmMainStore.mainstore_name_model.$error.required">Mainstore name required.</span>
+										<span style="color:red;" ng-show="frmMainStore.mainstore_name_model.$dirty && frmMainStore.mainstore_name_model.$error.pattern">Only alphabets are required.</span>
+									</div>
+											
+								
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label>Select Firm</label>
+									<select class="form-control" name="firm_select_model" ng-model="firm_select_model" required>
+										<option ng-repeat="single_firm in firms | orderBy : 'firmname'" value="//single_firm.firmid//">//single_firm.firmname | uppercase//</option>
+									</select>
+									<span style="color:red;" ng-show="frmMainStore.firm_select_model.$touched && frmMainStore.firm_select_model.$error.required">Firm required.</span>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label>Under which store</label>
+									<select class="form-control" name="under_store_select_model" ng-model="under_store_select_model" required>
+										<option ng-repeat="single_under_store in under_stores | orderBy : 'mainstorename'" value="//single_under_store.storeid//">//single_under_store.mainstorename | uppercase//</option>
+									</select>
+									<span style="color:red;" ng-show="frmMainStore.under_store_select_model.$touched && frmMainStore.under_store_select_model.$error.required">Firm required.</span>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<input type="button" class="btn btn-info btn-fill" value="Submit" ng-click="mainstoreSubmit()" ng-disabled="frmMainStore.mainstore_name_model.$invalid || frmMainStore.firm_select_model.$invalid || frmMainStore.under_store_select_model.$invalid">&nbsp;&nbsp;
+							<a href="#home"><input type="button" class="btn btn-info btn-fill" value="Cancel"></a>
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-8 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_store_model">
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table table-hover table-striped" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Mainstore Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Dependent Firm</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Under Which Store</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="single_storedata in all_storedata | filter: customFilter(search_store_model) | orderBy : 'mainstorename'" style="border-bottom:2px solid #dddddd;">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+																		<td><p ng-hide="edit_data[single_storedata.storeid]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_storedata.mainstorename//</p><input type="text" class="form-control" ng-show="edit_data[single_storedata.storeid]" ng-model="single_storedata.mainstorename" autofocus /></td>
+
+																		<td>
+																			<p ng-hide="edit_data[single_storedata.storeid]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_storedata.firmname//</p>
+																			<select class="form-control" ng-model="single_storedata.firmid" ng-show="edit_data[single_storedata.storeid]" ng-options="single_firm.firmid as single_firm.firmname for single_firm in firms | orderBy : 'firmname'">
+																	
+																			</select>
+																		</td>
+
+																		<td>
+																			<p ng-hide="edit_data[single_storedata.storeid]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_storedata.understorename//</p>
+																			<select class="form-control" ng-model="single_storedata.understoreid" ng-show="edit_data[single_storedata.storeid]" ng-options="single_under_store.storeid as single_under_store.mainstorename for single_under_store in under_stores">
+															
+																			</select>
+																		</td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Update"><button type="button" ng-show="edit_data[single_storedata.storeid]" class="btn btn-info btn-fill" value="Update" ng-click="storeupdate(single_storedata)" style="float:right;">Update</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Delete"><button type="button" ng-show="edit_data[single_storedata.storeid]" class="btn btn-info btn-fill" ng-click="storedelete(single_storedata)" style="float:right;" value="Delete">Delete</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Cancel"><button type="button" ng-show="edit_data[single_storedata.storeid]" class="btn btn-info btn-fill" ng-click="stopmodifystore(single_storedata)" value="Cancel" style="float:right;">Cancel</button></a></td>
+
+																		<td style="width:50px;"><p ng-hide="checkeditable(single_storedata)"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" ng-hide="edit_data[single_storedata.storeid]" class="btn btn-success btn-circle2" value="Edit" ng-click="modifystore(single_storedata)" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></p></td>
+
+																	</tr>
+																</tbody>
+															</table>
+														</div>	
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->		
+
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

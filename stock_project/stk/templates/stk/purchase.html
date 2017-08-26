@@ -1,0 +1,328 @@
+<div ng-controller="purchaseCtrl" style="line-height:100%;">
+	<div class="row fadeineffect">
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Purchase</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+
+		        <div class="content" style="padding-bottom:0px;">
+		            <form>
+						<fieldset style="border: 1px solid rgb(221, 221, 221);padding:9px;border-radius: 3px;"> <!--first fieldset start-->
+    						<legend style="margin-bottom:0px;font-size: 17px;border-bottom:0px;width:10%;color:#be7f71;">&nbsp;Main Data</legend>
+							<p ng-hide="true">//selected_purchaseid//</p>
+							<div class="row" style="line-height:50%;">
+								<div class="col-md-4" style="padding-bottom:0px;padding-top:0px;">
+									<div class="row">
+										<div class="col-md-5">
+											<label>Invoice No</label>
+											<input type="number" class="form-control" placeholder="Invoice no" ng-model="invoice_no_model" style="padding-right:1px;">
+										</div>
+										<div class="col-md-7">
+											<label>Invoice date</label>
+											<adm-dtp ng-model='invoice_date_model' options='{ autoClose: true, format: "YYYY-MM-DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-4">
+									<label>Item Received Date</label>
+									<adm-dtp ng-model='purchase_date_model' options='{ autoClose: true, format: "YYYY-MM-DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+								</div>
+
+								<div class="col-md-4" style="padding-bottom:0px;padding-top:0px;">
+									<div class="row">
+										<div class="col-md-6">
+											<label>Total price</label>
+											<input type="number" class="form-control" placeholder="Total price" ng-model="tot_price_model" style="padding-right:1px;">
+										</div>
+										<div class="col-md-6">
+											<label>Total tax</label>
+											<input type="number" class="form-control" placeholder="Total tax" ng-model="tot_tax_model" style="padding-right:1px;">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row" style="line-height:50%;">
+								<div class="col-md-4" style="padding-bottom:0px;padding-top:0px;">
+									<div class="row">
+										<div class="col-md-6">
+											<label>Net amount</label>
+											<input type="number" class="form-control" placeholder="Net amount" ng-model="net_amount_model" style="padding-right:1px;">
+										</div>
+										<div class="col-md-6">
+											<label>Total discount</label>
+											<input type="number" class="form-control" placeholder="Total discount" ng-model="tot_discount_model" style="padding-right:1px;">
+										</div>
+									</div>
+								</div>
+
+								<!--<div class="col-md-4">
+									<label>Entered date</label>
+									<adm-dtp ng-model='entered_date_model' options='{ autoClose: true, format: "YYYY-MM-DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+								</div> -->
+			
+								<div class="col-md-4" style="padding-right: 4px;">
+									<label>Supplier Name</label>
+									<input type="text" class="form-control"  ng-model="selectedSupplier"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="supplier as supplier.supplier_name for supplier in all_suppliers |filter: customFilterForSupplier($viewValue) | orderBy : 'supplier_name' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Supplier name" typeahead-editable='false' typeahead-no-results="noSupplier">
+									<div ng-show="noSupplier" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+										<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.<a href="#supplier" ng-click="addNewSupplierClicked()" style="float:right;padding-top: 3px;padding-right: 9px;"><i class="fa fa-plus"></i><u>Add New</u></a>
+									</div>
+								</div>
+							</div>
+
+
+
+							<!--<div class="row">
+								<div class="col-md-4" style="padding-bottom:0px;padding-top:0px;">
+									<div class="row">
+										<div class="col-md-5">
+											<label>Invoice No</label>
+											<input type="number" class="form-control" placeholder="Invoice no" ng-model="invoice_no_model">
+										</div>
+										<div class="col-md-7">
+											<label>Invoice date</label>
+											<adm-dtp ng-model='invoice_date_model' options='{ autoClose: true, format: "YYYY/MM/DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-4" style="padding-bottom:0px;padding-top:0px;">
+									<div class="row">
+										<div class="col-md-6">
+											<label>Total price</label>
+											<input type="number" class="form-control" placeholder="Total price" ng-model="tot_price_model">
+										</div>
+										<div class="col-md-6">
+											<label>Total tax</label>
+											<input type="number" class="form-control" placeholder="Total tax" ng-model="tot_tax_model">
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-4" style="padding-bottom:0px;padding-top:0px;">
+									<div class="row">
+										<div class="col-md-6">
+											<label>Net amount</label>
+											<input type="number" class="form-control" placeholder="Net amount" ng-model="net_amount_model">
+										</div>
+										<div class="col-md-6">
+											<label>Total discount</label>
+											<input type="number" class="form-control" placeholder="Total discount" ng-model="tot_discount_model">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-4">
+									<label>Item Received Date</label>
+									<adm-dtp ng-model='purchase_date_model' options='{ autoClose: true, format: "YYYY/MM/DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+								</div>
+
+								<div class="col-md-4">
+									<label>Entered date</label>
+									<adm-dtp ng-model='entered_date_model' options='{ autoClose: true, format: "YYYY/MM/DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+								</div>
+			
+								<div class="col-md-4">
+									<label>Select Maincategory</label>
+									<select class="form-control" ng-model="maincat_select_model" ng-options="single_maincat as single_maincat.maincatname for single_maincat in maincats | orderBy : 'maincatname'">
+									</select>
+								</div>
+							</div> -->
+						</fieldset> <!--first fieldset end-->
+			
+						<p></p><!--for making a gap-->
+						<fieldset style="border: 1px solid rgb(221, 221, 221);padding:9px;border-radius: 3px;"> <!--second fieldset start-->
+    						<legend style="margin-bottom:0px;font-size: 17px;border-bottom:0px;width:7%;color:#be7f71;margin-top: 2px;">&nbsp;Details</legend>
+							<p ng-show="true">//selected_detail_id_for_detail//</p>
+							<div class="row" style="line-height:50%;">
+								<div class="col-md-2">
+									<label>Maincategory</label>
+									<select class="form-control" ng-model="maincat_select_model" ng-options="single_maincat.maincat_id as single_maincat.maincat_name for single_maincat in maincats | orderBy : 'maincat_name'">
+									</select>
+								</div>
+
+								
+
+								<div class="col-md-3">
+									<label>Item</label>
+									<input type="text" class="form-control"  ng-model="selectedItem"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="item as item.item_name for item in all_items | filter: customFilterForItem($viewValue) | orderBy : 'item_name' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Item name" typeahead-editable='false' typeahead-no-results="noItems">
+									<div ng-show="noItems" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:96%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+										<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.<a href="#item" ng-click="addNewItemClicked()" style="float:right;padding-top: 3px;padding-right: 9px;"><i class="fa fa-plus"></i><u>Add New</u></a>
+									</div>
+								</div>
+
+								<div class="col-md-1">
+									<label>Quantity</label>
+									<input type="number" class="form-control" placeholder="Qty" ng-model="qty_model" min="0" style="padding-right:1px;">
+								</div>
+
+								<div class="col-md-2">
+									<label>Unit</label>
+									<select class="form-control" ng-model="unit_select_model" ng-options="single_unit.unit_id as single_unit.unit_name for single_unit in units | orderBy : 'unit_name'">																	
+									</select>
+								</div>
+
+								<div class="col-md-1">
+									<label>Unit Price</label>
+									<input type="number" class="form-control" placeholder="Unit price" ng-model="unit_price_model" style="padding-right:1px;padding-left:2px;">
+								</div>
+
+								<div class="col-md-3">
+									<label>Warranty to (if any)</label>
+									<adm-dtp ng-model='warranty_todate_model' options='{ autoClose: true, format: "YYYY-MM-DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+								</div>
+							</div>
+
+							<div class="row" style="line-height:50%;">
+								<div class="col-md-3">
+									<label>Description</label>
+									<input type="text" class="form-control" placeholder="Description" ng-model="desc_model">
+								</div>
+
+								<div class="col-md-2">
+									<label>Discount</label>
+									<input type="number" class="form-control" placeholder="Discount" ng-model="indivi_discount_model" style="padding-right:1px;">
+								</div>
+
+								<div class="col-md-1">
+									<label>Tax %</label>
+									<input type="number" class="form-control" placeholder="Tax %" ng-model="tax_percent_model" style="padding-right:1px;" ng-change="calTaxAmt()">
+								</div>
+
+								<div class="col-md-2">
+									<label>Tax Amount</label>
+									<input type="number" class="form-control" placeholder="Tax amount" ng-model="tax_amt_model" style="padding-right:1px;">
+								</div>
+
+								<div class="col-md-2">
+									<label>Stock Register</label>
+									<input type="number" class="form-control" placeholder="Page no" ng-model="stk_regtr_pageno_model" style="padding-right:1px;">
+								</div>
+									
+								<div class="col-md-2" style="padding-top: 9px;">
+									</br>
+									<a data-toggle="tooltip" data-placement="bottom" title="Add"><button type="button" class="btn btn-success btn-circle2 btn-lg" value="Add" ng-click="addDetailClicked()" style="width:45px;height:29px;border-radius:4px;margin-top: 3px;">//detailBtnTxt//</button></a>
+									<a data-toggle="tooltip" data-placement="bottom" title="Clear"><button type="button" class="btn btn-success btn-circle2 btn-lg" value="Clear" ng-click="clearDetailClicked()" style="width:45px;height:29px;border-radius:4px;margin-top: 3px;">Clear</button></a>
+								</div>
+
+								<!--<div class="col-md-1" style="padding-top: 9px;">
+									</br>
+									<a data-toggle="tooltip" data-placement="bottom" title="Add"><button type="button" class="btn btn-success btn-circle2 btn-lg" value="Edit" ng-click="addDetailClicked()" style="width:40px;height:29px;border-radius:4px;"><i class="fa fa-plus fa-2x"></i></button></a>
+								</div> -->
+							</div>
+
+
+							<div class="row"> <!--details table row start-->
+								<div class="col-md-12"> <!--details table col start-->
+									<div class="content table-responsive table-full-width" style="padding-bottom:0px;padding-top:0px;">
+										<div class="row">
+											<div class="col-md-offset-2 col-md-4" style="padding-top:0px;padding-bottom:0px;">
+												<p style="margin: 0 0 6px;line-height:100%;font-size:14px;color:#9A9A9A;font-weight:bold;">ITEM TOTAL: <span style="color:red;">₹&nbsp;//item_total=(convertToProper(qty_model)*convertToProper(unit_price_model))-convertToProper(indivi_discount_model)+convertToProper(tax_amt_model)//</span></p>
+											</div>
+											<div class="col-md-offset-2 col-md-4" style="padding-top:0px;padding-bottom:0px;">
+												<p style="margin: 0 0 6px;line-height:100%;font-size:14px;color:#9A9A9A;font-weight:bold;">GRAND TOTAL: <span style="color:red;">₹&nbsp;//grand_total//</span></p>
+											</div>
+										</div>
+										<div style="max-height: 250px;overflow: auto;border: 1px solid rgb(221, 221, 221);"   ng-show="detailTablePart">
+											<table class="table hovertable" style="margin-bottom:0px;border-collapse: inherit;">
+												<thead>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Item Name</b></th>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Supplier Name</b></th>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Quantity</b></th>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Unit Price</b></th>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Pageno</b></th>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Total</b></th>
+													<th style="border-bottom:1px solid;font-size: 13px;"><b></b></th>
+												</thead>
+												<tbody>															
+													<tr ng-repeat="detail in details" ng-click="detailTableRowClicked(detail,$index)" ng-class="{'tab-selected-row': detail.detail_id == selectedRowID}" style="cursor:pointer;">
+														<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+														<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.item_name//</p></td>	
+														<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.supplier_name//</p></td>	
+														<td><p style="max-width:60px;font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.quantity//</p></td>	
+														<td><p style="max-width:65px;font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.unit_price//</p></td>	
+														<td><p style="max-width:60px;font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.stk_regtr_pageno//</p></td>	
+														<td><p style="max-width:60px;font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.item_total//</p></td>	
+														<td><p style="max-width:40px;font-size: 14px;overflow:auto;margin:0 0 1px;"><a data-toggle="tooltip" data-placement="bottom" title="Remove"><button type="button" class="btn btn-danger btn-circle" value="Edit" ng-click="detailDeleteClicked(detail)" style="float:right;width:21px;height:21px;"><i class="fa fa-trash-o"></i></button></a></p></td>	
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div> <!--details table col end-->
+							</div> <!--details table row end-->
+						</fieldset><!--second fieldset end-->
+
+						<p></p><!--for gap-->
+						<div class="form-group">
+							<button type="button" class="btn btn-info btn-fill" ng-click="purchaseSubmit()">//btnTxt//</button>&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="purchaseClearClicked()">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="delButton" ng-click="purchaseDelete()">&nbsp;&nbsp;
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-8 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<div class="row"><!--table row-->
+							<div class="col-md-12" style="padding:0px;">
+								<div class="row">
+									<div class="col-md-12" style="padding-bottom:0px;">
+									  <div style=""><!-- padding div start -->
+										<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+											<table class="table hovertable" style="margin-bottom:0px;">
+												<thead>
+													<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+													<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Invoice No</b></th>
+													<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Invoice Date</b></th>
+													<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Net Amount</b></th>
+													<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Supplier Name</b></th>
+													<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Purchase Date</b></th>
+													<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+												</thead>
+												<tbody>															
+													<tr ng-repeat="purchase in all_purchases | filter:customFilterForPurchase(search_model) | orderBy: 'invoiceno'" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="purchaseTableRowClicked(purchase)" ng-class="{'tab-selected-row': purchase.purchaseid == selectedPID}">
+														<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+														<td><p style="max-width:30px;font-size: 14px;overflow:auto;margin:0 0 1px;">//purchase.invoiceno//</p></td>																		
+														<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//purchase.invoicedate//</p></td>								
+														<td><p style="max-width:150px;font-size: 14px;overflow:auto;margin:0 0 1px;">//purchase.netamount//</p></td>																												
+														<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//purchase.suppliername//</p></td>										
+														<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//purchase.purchasedate//</p></td>																	
+
+														<td style="max-width:30px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									  </div><!-- padding div end -->
+									</div><!--col12 end-->						
+								</div>
+							</div><!--col end-->	
+						</div><!--table row end-->							
+
+					
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

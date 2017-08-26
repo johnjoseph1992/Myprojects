@@ -1,0 +1,19 @@
+.card-hover div:hover{
+	background-color:rgba(203, 203, 210, 0.15);
+	z-index:1000;
+}
+
+.inner-hover div:hover{
+	background:transparent;
+}
+
+.round-div{
+	border-radius:60px;
+	height:60px;
+	width:60px;
+	text-align:center;
+	/*padding:10px;*/
+	padding-right:33px;
+	padding-top:5px;
+}
+

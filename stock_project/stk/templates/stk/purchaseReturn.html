@@ -1,0 +1,265 @@
+<div ng-controller="purchaseReturnCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Purchase Return</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showSupplierBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form>
+						<div class="row" window-size><!--new row start--><!--window-size for resizing desc and return by fields-->
+							<div class="col-md-9" style="padding-top:0px;">
+								<div class="row"> <!--inner row start-->
+									<div class="col-md-2">
+										<label>Invoice no</label>
+										<input type="number" class="form-control" style="padding-right:1px;" placeholder="Invoice No" ng-model="invoiceno_model" ng-keypress="enterKeyPressed($event)" ng-change="invoiceChanged()">
+									</div>
+
+									<div class="col-md-4">
+										<label>Supplier Name</label>
+										<!-- <select class="form-control" ng-model="subcat_select_model" ng-options="single_subcat.subcat_id as single_subcat.subcat_name for single_subcat in subcats | orderBy : 'subcat_name'" ng-change="subcatSelectChanged()" ng-disabled="delButton">
+										</select> -->
+										<input type="text" class="form-control"  ng-model="selectedSupplier"  typeahead-on-select="supplierSelectChanged()" typeahead-min-length="0" uib-typeahead="single_supplier as single_supplier.suppliername for single_supplier in all_suppliers | filter: $viewValue | orderBy : 'suppliername' | limitTo:8" typeahead-select-on-exact="true" placeholder="Supplier" typeahead-editable='false' typeahead-no-results="noSupplier" ng-click="" ng-blur="supplierLostFocus()" select-on-click>
+										<div ng-show="noSupplier" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:96%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+											<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+										</div>
+									</div>
+
+									<div class="col-md-4">
+										<label>Item</label>
+										<input type="text" class="form-control"  ng-model="selectedItem"  typeahead-on-select="itemSelectChanged()" typeahead-min-length="0" uib-typeahead="item as item.itemname for item in full_items | filter: customFilterForItem($viewValue) | orderBy : 'itemname' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Item name" typeahead-editable='false' typeahead-no-results="noItems" ng-blur="itemLostFocus()" ng-disabled="delButton" select-on-click>
+										<div ng-show="noItems" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:96%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+											<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+										</div>
+									</div>
+
+									<div class="col-md-2" style="" ng-class="{'returnby-margin-active': windowWidth > 991, 'returnby-margin-notactive': windowWidth <= 991}"><!--windowWidth is a part of window-resize directive attached with div class=row-->
+										<label>Return suggested by</label>
+										<input type="text" min="1" class="form-control" placeholder="Return suggested by" min="1" ng-model="returnedby_model">
+									</div>
+								</div><!--inner row end-->
+							</div>
+
+							<div class="col-md-3" style="" ng-class="{'desc-margin-active': windowWidth > 991, 'desc-margin-notactive': windowWidth <= 991}"> <!--windowWidth is a part of window-resize directive attached with div class=row-->
+								<label>Description</label>
+								<textarea rows="2" style="resize:none;height:55px;" class="form-control" placeholder="Description" ng-model="desc_model"></textarea>
+							</div>
+	
+						</div> <!--new row end-->
+
+
+
+
+
+						<!--<div class="row">row start
+							<div class="col-md-2">
+								<label>Invoice no</label>
+								<input type="number" class="form-control" style="padding-right:1px;" placeholder="Invoice No" ng-model="invoiceno_model" ng-keypress="enterKeyPressed($event)" ng-change="invoiceChanged()">
+							</div>
+
+							<div class="col-md-3">
+								<label>Supplier Name</label>
+								<input type="text" class="form-control"  ng-model="selectedSupplier"  typeahead-on-select="supplierSelectChanged()" typeahead-min-length="0" uib-typeahead="single_supplier as single_supplier.suppliername for single_supplier in all_suppliers | filter: $viewValue | orderBy : 'suppliername' | limitTo:8" typeahead-select-on-exact="true" placeholder="Supplier" typeahead-editable='false' typeahead-no-results="noSupplier" ng-click="" ng-blur="supplierLostFocus()" select-on-click>
+								<div ng-show="noSupplier" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:96%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<label>Item</label>
+								<input type="text" class="form-control"  ng-model="selectedItem"  typeahead-on-select="itemSelectChanged()" typeahead-min-length="0" uib-typeahead="item as item.itemname for item in full_items | filter: customFilterForItem($viewValue) | orderBy : 'itemname' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Item name" typeahead-editable='false' typeahead-no-results="noItems" ng-blur="itemLostFocus()" ng-disabled="delButton" select-on-click>
+								<div ng-show="noItems" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:96%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-2">
+								<label>Return suggested by</label>
+								<input type="text" min="1" class="form-control" placeholder="Return suggested by" min="1" ng-model="returnedby_model">
+							</div>
+
+							<div class="col-md-2" style="margin-top: -26px;">
+								<label>Description</label>
+								<textarea rows="2" style="resize:none;height:55px;" class="form-control" placeholder="Description" ng-model="desc_model"></textarea>
+							</div>
+						</div>row end-->
+
+						<div class="row" style="padding-left: 15px;padding-right: 15px;" ng-show="all_items.length > 0"> <!--info row start-->
+							<div class="col-md-12 chip" style="padding-top:0px;padding-bottom:0px;border-radius:0px;font-weight:600;">
+								Supplier
+								<span ng-repeat="supplier in supplierdependents" ng-class="{'list-item-selected': supplier.supplierid == clickedSupplierid, 'list-item-normal': supplier.supplierid != clickedSupplierid}" style="cursor:pointer;margin-right:4px;" ng-click="supplierListClicked(supplier)">
+									<span>//supplier.suppliername//</span>
+								</span>
+							</div>
+						</div> <!--info row end-->
+
+						<div class="row" style="padding-left: 15px;padding-right: 15px;font-weight:600;" ng-show="((all_items.length == 0) && (norecords==true)) || (!angular.isDefined(all_items) && (norecords==true))"><!--norecords row start-->
+							<div class="col-md-12 chip" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+								No Records.
+							</div>
+						</div> <!--norecords row end-->
+
+						<div class="row" ng-repeat="iteminfo in all_items">
+							<div class="col-md-12">
+								<fieldset style="border: 1px solid rgb(221, 221, 221);padding:5px;border-radius: 3px;"> <!--fieldset start-->
+    								<legend style="margin-bottom:0px;font-size: 13px;border-bottom:0px;width:auto;color:#cc2b08;text-align:center;">&nbsp;//iteminfo.itemname//&nbsp;</legend>
+									<div ng-repeat="itemfitidcheck in iteminfo.stkItemDetails" style="display: inline-block;width:170px;overflow:auto;">
+									<label><checkbox normal ng-model="itemfitidcheck.val" class="btn-normal" ng-change="checkedItemSelected(itemfitidcheck.fitid,itemfitidcheck.val,iteminfo.itemname,iteminfo.itemid,itemfitidcheck.itemdetailsid)"></checkbox>&nbsp;&nbsp;//itemfitidcheck.fitid//</label>
+								</div>
+								</fieldset>
+							</div>
+						</div>  <!--<span>Full Data: //all_items// </br>Selected Items: //selected_items//</span>-->
+
+						<!--<label>Select items to return</label>
+						<div class="row">
+							<div class="col-md-12">
+								<div ng-repeat="fisatid in fisatidlist" style="display: inline-block;width:175px;overflow:auto;">
+									<label class="checkbox">
+										<span class="icons"><span class="first-icon fa fa-square-o"></span><span class="second-icon fa fa-check-square-o"></span></span><input type="checkbox" data-toggle="checkbox" ng-model="fisatid.val"><span style="color:black;">//fisatid.fitid//</span>
+									</label>
+									<label><checkbox normal ng-model="fisatid.val" class="btn-normal"></checkbox>&nbsp;&nbsp;//fisatid.fitid//</label>
+								</div>
+							</div>
+						</div> -->
+
+						<!--<label>Select items to return</label>
+						<div class="row">row3 start
+							<div class="col-md-12">
+								<div ng-repeat="fisatid in fisatidlist" style="display: inline-block;width:175px;overflow:auto;">
+									<label><input type="checkbox" ng-model="fisatid.val">&nbsp;//fisatid.fitid//</label> 
+								</div>
+							</div>
+						</div><!--row3 end-->
+
+						<!--<label>Select items to return</label>
+						<div class="row">
+							<div class="col-md-4">
+								<table>
+									<tr ng-repeat="fisatid in fisatidlist">
+										<td><label><input type="checkbox" ng-model="fisatid.val">&nbsp;//fisatid.fitid//</label></td> 
+									</tr>
+								</table>
+							</div>
+	
+							<div class="col-md-8">
+								//fisatidlist//
+							</div>
+						</div> -->
+
+						<!--<div class="row"> row3 start
+							<div class="col-md-5">
+								<a data-toggle="tooltip" data-placement="bottom" title="Add"><button type="button" class="btn btn-success btn-circle2 btn-lg" value="Add" style="width:45px;height:29px;border-radius:4px;margin-top: 3px;">Add</button></a>
+								<a data-toggle="tooltip" data-placement="bottom" title="Clear"><button type="button" class="btn btn-success btn-circle2 btn-lg" value="Clear" style="width:45px;height:29px;border-radius:4px;margin-top: 3px;">Clear</button></a>
+							</div>
+						</div> <!--row3 end-->
+
+						<div class="row" ng-show="selected_items.length > 0"> <!--row4 start-->
+							<div class="col-md-12"> <!--col start-->
+								<label style="font-size: 13px;color:#01a1ad;">Selected Items For Return</label>
+								<div class="content table-responsive table-full-width" style="padding-bottom:0px;padding-top:0px;">
+									<div style="max-height: 250px;overflow: auto;border: 1px solid rgb(221, 221, 221);"   ng-show="true"> <!--table viewpart start-->
+										<table class="table hovertable" style="margin-bottom:0px;border-collapse: inherit;">
+											<thead>
+												<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+												<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Supplier Name</b></th>
+												<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Invoice No</b></th>
+												<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Item Name</b></th>
+												<!--<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Returned by</b></th>-->
+												<th style="border-bottom:1px solid;font-size: 13px;"><b style="color:#444;">Fisatid</b></th>
+											</thead>
+											<tbody>															
+												<tr ng-click="detailTableRowClicked(detail,$index)" ng-repeat="selected in selected_items" style="cursor:pointer;"> <!--ng-class="{'tab-selected-row': detail.detail_id == selectedRowID}" -->
+													<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+													<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//selected.suppliername//</p></td>	
+													<td><p style="max-width:80px;font-size: 14px;overflow:auto;margin:0 0 1px;">//selected.invoiceno//</p></td>	
+													<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//selected.itemname//</p></td>	
+													<!--<td><p style="max-width:70px;font-size: 14px;overflow:auto;margin:0 0 1px;">//selected.returnedby//</p></td>-->
+													<td><p style="max-width:180px;font-size: 14px;overflow:auto;margin:0 0 1px;">//selected.fitid//</p></td>	
+												</tr>
+											</tbody>
+										</table>
+									</div> <!--table viewpart start-->
+								</div>
+							</div> <!--col end-->
+						</div> <!--row4 end-->
+						
+						<p></p>
+						<div class="form-group">
+							<button type="button" class="btn btn-info btn-fill" ng-click="purchaseReturnSubmit()">Return</button>&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="clearClicked()">&nbsp;&nbsp;
+							<!--<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="delButton" ng-click="purchaseReturnDelete()">-->
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<div class="row"><!--table row-->
+								<div class="col-md-12" style="padding:0px;">
+									<div class="row">
+										<div class="col-md-12" style="padding-bottom:0px;"><p ng-show="false">//selected_purchasereturn_obj//</p>
+										  <div class="row">
+										  	<div class="col-md-offset-5 col-md-7" style="padding-bottom: 0px;">	
+										  		<label style="font-size:13px;color:#01a1ad;">All Returned Items</label>
+											</div>
+										  </div>
+										  <hr style="margin-top: 0px;margin-bottom: 0px;">
+										  <div style=""><!-- padding div start -->
+											<div class="content table-responsive table-full-width" style="padding-bottom:0px;padding-top: 0px;">
+												<table class="table hovertable" style="margin-bottom:0px;">
+													<thead>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Supplier Name</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Invoice no</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Item Name</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Fisat ID</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Returned Date</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b></b></th>
+													</thead>
+													<tbody>															
+														<tr ng-repeat="preturn in all_preturns | filter:customFilterForReturn(search_model) | orderBy: 'fitid'" on-finish-render="preturnNgRepeatFinished" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="" ng-class="{'tab-selected-row': preturn.itemdetailsid == selectedDID}">
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>															
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//preturn.suppliername//</p></td>
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//preturn.invoiceno//</p></td>
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//preturn.itemname//</p></td>
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//preturn.fitid//</p></td>
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//preturn.returneddate//</p></td>
+
+															<td style="max-width:30px;"><a data-toggle="tooltip" data-placement="bottom" title="Cancel"><button type="button" class="btn btn-success btn-circle2" value="Cancel" ng-click="purchaseReturnDelete(preturn)" style="float:right;"><i class="small material-icons" style="font-size: 20px;margin-left: -3px;margin-top: -3px;">cancel</i></button></a></td>
+														</tr>
+													</tbody>
+												</table>
+												<!-- NO data msg start-->
+												<div ng-show="loadingPart" style="height:25px;">
+													&nbsp;<i class="fa fa-spinner fa-pulse" style="color:green;"></i> Loading...         
+												</div>
+												<div ng-show="nodataPart" style="height:25px;">
+													&nbsp;//errorMsg//.         
+												</div>
+												<!-- NO data msg end-->
+											</div>
+										  </div><!-- padding div end -->
+										</div><!--col12 end-->						
+									</div>
+								</div><!--col end-->	
+						</div><!--table row end-->			
+					
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

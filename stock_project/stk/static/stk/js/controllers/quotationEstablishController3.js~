@@ -1,0 +1,381 @@
+app.controller("quotationEstablishCtrl", function($scope,$http, $window) {
+
+		$scope.subRequestPart = false;
+		$scope.search_quotation_details = [];
+
+		//manage tabs...
+		$scope.establishTab = true;
+		$scope.fixPriceTab = false;
+		$scope.selectTab = false;
+		$scope.establishedTab = false;
+
+		$scope.establishTabClicked = function(){
+			$scope.establishTab = true;
+			$scope.fixPriceTab = false;
+			$scope.selectTab = false;
+			$scope.establishedTab = false;
+		}
+
+		$scope.fixPriceTabClicked = function(){
+			$scope.establishTab = false;
+			$scope.fixPriceTab = true;
+			$scope.selectTab = false;
+			$scope.establishedTab = false;
+		}
+	
+		$scope.selectTabClicked = function(){
+			$scope.establishTab = false;
+			$scope.fixPriceTab = false;
+			$scope.selectTab = true;
+			$scope.establishedTab = false;
+		}
+
+		$scope.establishedTabClicked = function(){
+			$scope.establishTab = false;
+			$scope.fixPriceTab = false;
+			$scope.selectTab = false;
+			$scope.establishedTab = true;
+		}
+		//manage tabs...
+
+
+		//initially load all quotations in search table quotations...
+		$http({
+			method : "GET",
+			url : "http://stock.fisat.edu:8000/stockapp/searchQuotations/",
+			params: {filter: "ALL", keyword:""}
+
+		     }).then(function mySucces(response) {
+			// $scope.myResponse = response.data;
+			$scope.search_quotation_details = response.data.Quotations;
+		     }, function myError(response) {
+			// $scope.myResponse = response.statusText;
+		});//search end...
+
+
+		//load the multiline selectbox with supplier Names...
+		$http({
+				method : "GET",
+				url : "http://stock.fisat.edu:8000/stockapp/loadSupplierNamesWithRating/"
+			}).then(function mySucces(response) {
+				$scope.all_suppliers = response.data.Supplier;
+				//alert(response.data);
+			}, function myError(response) {
+		});//loading selectbox end...
+
+
+		/*//load the simple selectbox with supplier Names corresponding to the active quotations...
+		$http({
+				method : "GET",
+				url : "http://stock.fisat.edu:8000/stockapp/loadSupplierNamesOfActiveQuotations/"
+			}).then(function mySucces(response) {
+				$scope.all_suppliers_for_active_quotation = response.data.Supplier;
+				//alert(response.data);
+			}, function myError(response) {
+		});//loading selectbox end...*/
+
+
+		//load the selectbox with quotation_ids (quotation establish part)...
+		$http({
+				method : "GET",
+				url : "http://stock.fisat.edu:8000/stockapp/loadActiveQuotationIds/"
+			}).then(function mySucces(response) {
+				$scope.all_active_quotation_ids = response.data.Quotation;
+				//alert(response.data);
+			}, function myError(response) {
+		});//loading selectbox end...
+
+
+		//load the selectbox with quotation_ids (select box in select quotation part)...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadOverQuotationIds/"
+				}).then(function mySucces(response) {
+					$scope.all_over_quotation_ids = response.data.Quotation;
+					//alert(response.data);
+				}, function myError(response) {
+			});//loading selectbox end...
+
+
+		//load main requests to first table...
+		$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainRequestInfoToEstablishQuotation/"
+				}).then(function mySucces(response) {
+					$scope.all_requests = response.data.RequestsMain;
+				}, function myError(response) {
+
+		}); //loading end...
+
+		
+		
+		$scope.requestMainClicked = function(full_request_object, main_index_value){//main table row clicked...
+				
+				$scope.subRequestPart = true;
+				$scope.full_request_id_for_quotation = full_request_object.full_req_id;
+				//load request info to selectbox...
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSubRequestInfoFromFullIdToEstablishQuotation/",  
+					params: {full_req_id: full_request_object.full_req_id}
+				}).then(function mySucces(response) {
+					$scope.all_sub_requests = response.data.RequestsSub;
+				}, function myError(response) {
+
+				}); //loading end...
+			}
+
+
+		$scope.all_sub_requests = [];
+		//Remove subrequests from table...
+		$scope.removeRequest = function(sub_req){
+			if ($scope.all_sub_requests.length == 1){
+				alert("Atleast one must be required.");
+			}
+			else{
+				$scope.all_sub_requests.splice(sub_req, 1);
+			}
+		}
+		//remove end...
+
+
+		//$scope.supplier_select_model = [];
+		$scope.establishQuotationClicked = function(){
+
+			var json_all_sub_requests=angular.toJson($scope.all_sub_requests);//alert(json_all_sub_requests.toString());
+			//establish quotations...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/establishQuotationSubmit/",  
+					params: {full_id_for_quotation:$scope.full_request_id_for_quotation, start_date: $scope.st_date_model, end_date:$scope.end_date_model, supplier_id:$scope.supplier_select_model,all_sub_requests_json: json_all_sub_requests}
+				}).then(function mySucces(response) {
+					if(response.data == "success"){
+						alert("Quotation Established Successfully");	
+						$scope.subRequestPart = false;			
+					}
+					else{
+						alert(response.data);
+						$scope.subRequestPart = false;
+					}	
+				}, function myError(response) {
+
+			});//establish quotations end...
+
+			
+			//load main requests to first table(refresh)...
+			$http({
+						method : "GET",
+						url : "http://stock.fisat.edu:8000/stockapp/loadMainRequestInfoToEstablishQuotation/"
+					}).then(function mySucces(response) {
+						$scope.all_requests = response.data.RequestsMain;
+					}, function myError(response) {
+
+			}); //loading end...
+
+			
+			//load the selectbox with quotation_ids(refreshing)...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadActiveQuotationIds/"
+				}).then(function mySucces(response) {
+					$scope.all_active_quotation_ids = response.data.Quotation;
+					//alert(response.data);
+				}, function myError(response) {
+			});//loading selectbox end...
+		}
+
+		
+		//load supplier names on ng-change of quot_id select box...
+		$scope.loadAllSuppliersForQuotation = function(){
+			//load the simple selectbox with supplier Names corresponding to the active quotations...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSupplierNamesOfActiveQuotations/",
+					params: {quotation_id: $scope.quotation_id_model}
+				}).then(function mySucces(response) {
+					$scope.all_suppliers_for_active_quotation = response.data.Supplier;
+					//alert(response.data);
+				}, function myError(response) {
+			});//loading selectbox end...
+		}
+
+
+		//fix price button is clicked...
+		$scope.fixQuotationSubmit = function(){
+			//submit details to table...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/fixPriceSubmit/",
+					params: {quotation_id: $scope.quotation_id_model, supplier_id:$scope.supplier_name_select_model, total_quot_price:$scope.total_quot_price_model, negotiated_price:$scope.negotiated_price_model}
+				}).then(function mySucces(response) {
+					if(response.data == "success"){
+						alert("Quotation Price Fixed Successfully");				
+					}
+					else{
+						alert(response.data);
+					}
+				}, function myError(response) {
+			});//loading selectbox end...
+
+	
+			//change status of full request to AQO(All Quotations Over) if all corresponding quotations are with status="O"...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/checkWhetherAllQuotationsOver/",
+					params: {quot_id: $scope.quotation_id_model}
+				}).then(function mySucces(response) {
+					//alert("worked");
+				}, function myError(response) {
+			});//status change end...
+
+			//load the simple selectbox with supplier Names corresponding to the active quotations (refreshing remaining supplier names)
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSupplierNamesOfActiveQuotations/",
+					params: {quotation_id: $scope.quotation_id_model}
+				}).then(function mySucces(response) {
+					$scope.all_suppliers_for_active_quotation = response.data.Supplier;
+					//alert(response.data);
+				}, function myError(response) {
+			});//loading selectbox end...
+
+			//load the selectbox with quotation_ids (select box in select quotation part)...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadOverQuotationIds/"
+				}).then(function mySucces(response) {
+					$scope.all_over_quotation_ids = response.data.Quotation;
+					//alert(response.data);
+				}, function myError(response) {
+			});//loading selectbox end...
+
+		}//fix price end...
+
+
+
+		//load supplier names on selectbox (work on ng-change of quotation_id, select quotation part)...
+		$scope.loadAllSuppliersForQuotationSelection = function(){
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSupplierNamesFromQuotationId/",
+					params: {quotation_id: $scope.select_quotation_id_model}
+				}).then(function mySucces(response) {
+					$scope.all_suppliers_for_over_quotation = response.data.Supplier;
+					//alert(response.data);
+				}, function myError(response) {
+			});
+		}//load supplier end...
+
+
+		//selecting a quotation...
+		$scope.selectQuotationSubmit = function(){
+
+			//submit quotation selection...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/selectQuotationSubmit/",
+					params: {quotation_id: $scope.select_quotation_id_model, supplier_id: $scope.supplier_name_select_quotation_model}
+				}).then(function mySucces(response) {
+					if(response.data == "success"){
+						alert("Quotation selected Successfully");				
+					}
+					else{
+						alert(response.data);
+					}
+				}, function myError(response) {
+			});//quotation selection end...
+
+			//load the selectbox with quotation_ids (select box in select quotation part)...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadOverQuotationIds/"
+				}).then(function mySucces(response) {
+					$scope.all_over_quotation_ids = response.data.Quotation;
+					//alert(response.data);
+				}, function myError(response) {
+			});//loading selectbox end...
+
+		}//selecting quotation end...
+
+
+
+		//managing disabled property of search select box...
+		$scope.manageDisabledKeyword = function(){
+			if(($scope.filter_quotation_model == "ALL") || ($scope.filter_quotation_model == "ACTIVE") || ($scope.filter_quotation_model == "SELECTED")){
+				$scope.disableKeywordBox = true;
+			}
+			else{
+				$scope.disableKeywordBox = false;
+			}
+		}
+		//manage end...		
+
+		
+		//get full form of status letter...
+		$scope.fullFormStatus = function(status_shortform){
+			if(status_shortform == "A"){
+				return "Active";
+			}
+			else if(status_shortform == "O"){
+				return "Price Fixed"; //status "over"
+			}
+			else if(status_shortform == "S"){
+				return "Selected";
+			}
+			else{
+				return "Rejected";
+			}
+		} //end...
+
+
+		//searching in quotations...
+		$scope.searchBrand = function(filter_by,search_keyword){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/searchQuotations/",
+					params: {filter: filter_by, keyword:search_keyword}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						$scope.search_quotation_details = response.data.Quotations;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+		}//search end...
+
+
+		//function to get pdf...
+		$scope.getPrint = function(){
+			//alert();
+			var json_quot=angular.toJson($scope.search_quotation_details);
+			$window.open("http://stock.fisat.edu:8000/stockapp/quotationDetailsPdf/?json_quot="+ json_quot);
+			/*$http({
+				method : "GET",
+				url : "http://stock.fisat.edu:8000/stockapp/quotationDetailsPdf/",
+				params: {json_quot: json_quot}
+
+			  }).then(function mySucces(response) {alert(response.data);
+				var file = new Blob([response],{type: 'application/pdf'});
+				var fileURL = URL.createObjectURL(file);
+				alert(fileURL.toString());
+				$window.open(fileURL);	
+				}, function myError(response) {
+			});*/
+
+			}
+			//get pdf end...
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+

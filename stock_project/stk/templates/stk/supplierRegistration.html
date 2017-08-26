@@ -1,0 +1,145 @@
+<div ng-controller="supplierRegCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Supplier Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showSupplierBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form><p ng-hide="true">//selected_supplier_id// //selected_supplier_obj//</p>
+						<div class="row">
+							<div class="col-md-5">
+								<label>Supplier Name</label>
+								<input type="text" class="form-control" placeholder="Name" ng-model="sup_name_model">
+							</div>
+
+							<div class="col-md-offset-1 col-md-5">
+								<label>Address</label>
+								<input type="text" class="form-control" placeholder="Address" ng-model="sup_addr_model">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-5">
+								<label>City</label>
+								<!--<input type="text" class="form-control" placeholder="City" ng-model="sup_city_model">-->
+								<input type="text" class="form-control" ng-model="sup_city_model" typeahead-min-length="0" uib-typeahead="single_city.city for single_city in all_cities | filter: $viewValue | limitTo:8" typeahead-select-on-exact="true" placeholder="City">
+							</div>
+
+							<div class="col-md-offset-1 col-md-5">
+								<label>District</label>
+								<!--<input type="text" class="form-control" placeholder="District" ng-model="sup_district_model">-->
+								<input type="text" class="form-control" ng-model="sup_district_model" typeahead-min-length="0" uib-typeahead="single_district.district for single_district in all_districts | filter: $viewValue | limitTo:8" typeahead-select-on-exact="true" placeholder="District">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-5">
+								<label>State</label>
+								<!--<input type="text" class="form-control" placeholder="State" ng-model="sup_state_model"> -->
+								<input type="text" class="form-control" ng-model="sup_state_model" typeahead-min-length="0" uib-typeahead="single_state.state for single_state in all_states | filter: $viewValue | limitTo:8" typeahead-select-on-exact="true" placeholder="State">
+							</div>
+
+							<div class="col-md-offset-1 col-md-5">
+								<label>Country</label>
+								<!--<input type="text" class="form-control" placeholder="Country" ng-model="sup_country_model">-->
+								<input type="text" class="form-control" ng-model="sup_country_model" typeahead-min-length="0" uib-typeahead="single_country.country for single_country in all_countries | filter: $viewValue | limitTo:8" typeahead-select-on-exact="true" placeholder="Country">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-5">
+								<label>Mail ID</label>
+								<input type="text" class="form-control" placeholder="Mail id" ng-model="sup_mail_model">
+							</div>
+
+							<div class="col-md-offset-1 col-md-5">
+								<div class="row">
+									<div class="col-md-7">
+										<label>Phone</label>
+										<input type="text" class="form-control" placeholder="Phone" ng-model="sup_phone_model">
+									</div>
+									<div class="col-md-5">
+										<label>Vat No</label>
+										<input type="text" class="form-control" placeholder="Vat no" ng-model="sup_vat_model">
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<button type="button" class="btn btn-info btn-fill" ng-click="supplierSubmit()">//btnTxt//</button>&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="cancelClicked()">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="delButton" ng-click="supplierDelete()">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Back" ng-show="showSupplierBack" ng-click="backToPrevous()">&nbsp;&nbsp;
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-8 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+													  <div style=""><!-- padding div start -->
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table hovertable" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Address</b></th>
+																	<!--<th style="border-bottom:5px solid;font-size: 13px;"><b>City</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b>District</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b>Country</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b>State</b></th>-->
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Mailid</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Phone</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Vatno</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Rating</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>															
+																	<tr ng-repeat="supplier in all_suppliers | filter:customFilterForSupplier(search_model) | orderBy: 'supplier_name'" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="supplierTableRowClicked(supplier)" ng-class="{'tab-selected-row': supplier.supplier_id == selectedID}">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+																		<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.supplier_name//</p></td>																		
+																		<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.address//</p></td>																		
+																		<!--<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.city//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.district//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.country//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.state//</p></td>-->																		
+																		<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.mailid//</p></td>											
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.mobileorlandline//</p></td>										
+																		<td><p style="max-width:50px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.vatno//</p></td>										
+																		<td><p style="max-width:20px;font-size: 14px;overflow:auto;margin:0 0 1px;">//supplier.rating//</p></td>																	
+
+																		<td style="max-width:30px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+													  </div><!-- padding div end -->
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->			
+					
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

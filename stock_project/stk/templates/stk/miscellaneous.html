@@ -1,0 +1,161 @@
+<div ng-controller="miscellaneousCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Miscellaneous</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showSupplierBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form>
+						<div class="row" style="padding-left: 15px;padding-right: 15px;" ng-show="false"> <!--info row start-->
+							<div class="col-md-12 chip" style="padding:0px;padding-left:1px;border-radius:0px;font-weight:600;">
+								<span ng-repeat="singleoption in alloptions" ng-class="{'list-item-selected': singleoption.optionid == clickedOptionid, 'list-item-normal': singleoption.optionid != clickedOptionid}" style="cursor:pointer;margin-right:4px;" ng-click="tabClicked(singleoption)">
+									<span>//singleoption.optionname//</span>
+								</span>
+							</div>
+						</div> <!--info row end-->
+
+						<div class="row" ng-show="false">
+							<div class="col-md-12">
+								<fieldset style="border: 1px solid rgb(221, 221, 221);padding:5px;border-radius: 3px;margin-top: -7px;border-top:none;"> <!-- fieldset start-->
+										<legend style="margin-bottom:0px;font-size: 13px;border-bottom:0px;width:auto;color:#cc2b08;text-align:center;"></legend>
+								</fieldset>
+							</div>
+						</div>
+
+						<div class="row" style="padding-left: 15px;padding-right: 15px;" ng-show="false"> <!--info row start-->
+							<table class="table" style="margin-bottom:0px;">
+
+									<th style="border-bottom:3px solid;font-size: 13px;align:middle;" ng-repeat="singleoption in alloptions" ng-class="{'tab-item-selected': singleoption.optionid == clickedOptionid, 'tab-item-normal': singleoption.optionid != clickedOptionid}"  ng-click="tabClicked(singleoption)"><b>//singleoption.optionname//</b></th>
+
+							</table>
+						</div> <!--info row end-->
+
+						<div class="row"> <!--tab row start-->
+							<div class="col-md-12" style="padding-bottom:0px;">
+								<div ng-repeat="singleoption in alloptions" ng-class="{'tab-item-selected2': singleoption.optionid == clickedOptionid, 'tab-item-normal2': singleoption.optionid != clickedOptionid}"  ng-click="tabClicked(singleoption)" style="display: inline-block;padding-left: 9px;padding-right: 9px;padding-bottom: 4px;cursor:pointer;text-align: center;transition: all 0.5s;">
+									<span style="font: 14px/1 'Open Sans', sans-serif;font-weight:600;">//singleoption.optionname//</span>
+								</div>
+							</div>
+						</div> <!--tab row end-->
+						<div style="border-bottom:3px solid rgb(224,224,224);margin-top:-3px;"></div>
+						<br>
+
+						<!--service company tab start-->
+						<div  ng-show="clickedOptionid==1"> <!--service company tab div start-->
+							<div class="row">
+								<div class="col-md-12">
+									<p ng-show="true">//selectedcompany_obj//</p>
+									<div class="row">
+										<div class="col-md-3" style="padding-top:0px;">
+											<label>Company name</label>
+											<input type="text" class="form-control"  ng-model="name_model" placeholder="Company name">
+										</div>
+
+										<div class="col-md-3" style="padding-top:0px;">
+											<label>Mail ID</label>
+											<input type="text" class="form-control"  ng-model="mail_model" placeholder="Mail ID">
+										</div>
+
+										<div class="col-md-2" style="padding-top:0px;">
+											<label>Phone No</label>
+											<input type="number" class="form-control"  ng-model="phone_model" placeholder="Phone no" style="padding-right: 1px;">
+										</div>
+
+										<div class="col-md-4" style="padding-top:0px;">
+											<label>Address</label>
+											<input type="text" class="form-control"  ng-model="addr_model" placeholder="Address">
+										</div>
+									</div>						
+	
+									<div class="form-group">
+										<button type="button" class="btn btn-info btn-fill" ng-click="companySubmit()">//companyBtnTxt//</button>&nbsp;&nbsp;
+										<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="companyClearClicked()">&nbsp;&nbsp;
+										<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="companyDelButton" ng-click="companyDelete()">&nbsp;&nbsp;
+										<!--<input type="button" class="btn btn-info btn-fill" value="Back" ng-show="showItemBack" ng-click="backToPrevous()">&nbsp;&nbsp; -->
+									</div>
+								</div>
+							</div>
+					
+							<div class="row">
+								<div class="col-md-offset-9 col-md-3">
+									<div>
+										<label>Search</label>
+										<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+									</div>
+								</div>
+							</div>
+
+							<div class="row" id="itemdetails"><!--table row-->
+								<div class="col-md-12" style="padding:0px;">
+									<div class="row">
+										<div class="col-md-12" style="padding-bottom:0px;">
+										  <div style=""><!-- padding div start -->
+											<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+												<table class="table hovertable" style="margin-bottom:0px;">
+													<thead>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Company Name</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Mail ID</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Phone No</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Address</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b></b></th>
+													</thead>
+													<tbody>															
+														<tr ng-repeat="company in companies | filter:customFilterForCompany(search_model) | orderBy: 'companyname'" on-finish-render="itemNgRepeatFinished" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="" ng-class="{'tab-selected-row': company.companyid == selectedCID}">
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//company.companyname//</p></td>																		
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//company.mailid//</p></td>																		
+															<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//company.phone//</p></td>																		
+															<td><p style="max-width:240px;font-size: 14px;overflow:auto;margin:0 0 1px;">//company.address//</p></td>					
+															<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="editCompanyClicked(company)" style="float:right;" ng-show="company.editable"><i class="fa fa-pencil-square-o"></i></button></a></td>
+														</tr>
+													</tbody>
+												</table>
+												<!-- NO data msg start-->
+												<div ng-show="loadingPart" style="height:25px;">
+													&nbsp;<i class="fa fa-spinner fa-pulse" style="color:green;"></i> Loading...         
+												</div>
+												<div ng-show="nodataPart" style="height:25px;">
+													&nbsp;//errorMsg//.         
+												</div>
+												<!-- NO data msg end-->
+											</div>
+										  </div><!-- padding div end -->
+										</div><!--col12 end-->						
+									</div>
+								</div><!--col end-->	
+							</div><!--table row end-->
+						</div> <!--service company tab div end-->
+						<!--service company tab end-->
+
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,74 @@
+<html>
+	<center>{{headingdata}}</center>
+	<div class="content table-responsive table-full-width">
+		<table border="1">
+			<tr>
+				<th>Sl no</th>
+				<th>Brand name</th>
+				<th>Model name</th>
+				<th>Type</th>
+				<th>Subcategory</th>
+				<th>Qty Existing</th>
+				<th>Contents</th>
+				<th>Unit</th>
+			</tr>
+			{% for item in json_items %}
+				<tr>
+					<td> {{ forloop.counter }}</td> <!--it will automatically show serial numbers-->
+					<td> {{ item.brand_name }}</td>
+					<td> {{ item.model_name }}</td>
+					<td> {{ item.maincat_name }}</td>
+					<td> {{ item.subcat_name }}</td>
+					<td> {{ item.qty_available }}</td>
+					<td> {{ item.no_of_contents }}</td>
+					<td> {{ item.unit_name }}</td>
+				</tr> 
+			{% endfor %}
+		</table>
+	</div>
+	<script>
+		var new_window_obj = window.self; //get instance of current window
+		new_window_obj.print();
+	</script>
+
+	<style>
+		th{
+			text-transform: uppercase;
+			color: black;
+			font-weight: 700;
+			padding: 5px;
+			font-size:14px;
+		}
+
+		td{
+			color:black;
+			font-size:14px;
+			padding-left:3px;
+			padding-right:3px;
+			padding-top:3px;
+			padding-bottom:3px;
+		}
+
+		table,th,td{
+			border:1px solid black;
+			border-collapse: collapse;
+		}
+	</style>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

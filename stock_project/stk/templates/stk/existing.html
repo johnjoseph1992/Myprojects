@@ -1,0 +1,177 @@
+<div ng-controller="existingCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Existing Item Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showSupplierBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form>
+						<div class="row"><p ng-hide="true">//selected_itemdetailsid// //selected_issueid// //selected_itemdetailobj//</p>
+							<div class="col-md-2">
+								&nbsp;&nbsp;<label style="color:green;" ng-click="clearClicked()"><input type="radio" ng-model="exist_check_submit_model" ng-value="true" ng-click="showAllIssued()">&nbsp;Issued</label>
+							</div>
+							
+							<div class="col-md-2">
+								<label style="color:green;" ng-click="clearClicked()"><input type="radio" ng-model="exist_check_submit_model" ng-value="false" ng-click="showAllNonissued()">&nbsp;Not Issued</label>
+							</div>
+						</div>
+
+						<div class="row"><!--row start-->
+							<div class="col-md-4">
+								<label>Subcategory</label>
+								<!-- <select class="form-control" ng-model="subcat_select_model" ng-options="single_subcat.subcat_id as single_subcat.subcat_name for single_subcat in subcats | orderBy : 'subcat_name'" ng-change="subcatSelectChanged()" ng-disabled="delButton">
+								</select> -->
+								<input type="text" class="form-control"  ng-model="selectedSubcat"  typeahead-on-select="subcatSelectChanged()" typeahead-min-length="0" uib-typeahead="single_subcat as single_subcat.subcat_name for single_subcat in subcats | filter: $viewValue | orderBy : 'subcat_name' | limitTo:8" typeahead-select-on-exact="true" placeholder="Subcategory" typeahead-editable='false' typeahead-no-results="noSubcats" ng-click="" ng-blur="subcatLostFocus()" ng-disabled="delButton">
+								<div ng-show="noSubcats" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:86%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>Item</label>
+								<input type="text" class="form-control"  ng-model="selectedItem"  typeahead-on-select="itemSelected()" typeahead-min-length="0" uib-typeahead="item as item.item_name for item in all_items | filter: customFilterForItem($viewValue) | orderBy : 'item_name' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Item name" typeahead-editable='false' typeahead-no-results="noItems" ng-blur="itemLostFocus()" ng-disabled="delButton">
+								<div ng-show="noItems" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<label>Quantity</label>
+								<input type="number" min="1" class="form-control" style="padding-right:1px;" placeholder="Quantity" min="1" ng-model="exist_qty_model" ng-change="qtyChanged()" ng-disabled="delButton">
+							</div>
+
+							<div class="col-md-1" ng-hide="true"> <!--not needed in the modified form, just hide without removal-->
+								<label>Unit</label>
+								<select class="form-control" ng-model="unit_select_model" ng-options="single_unit.unit_id as single_unit.unit_name for single_unit in units | orderBy : 'unit_name'" ng-disabled="delButton">
+								</select>
+							</div>
+
+							<!-- <div class="col-md-2">
+								<label>Fisat ID</label>
+								<input type="text" class="form-control" style="padding-right:1px;" placeholder="Fisat ID" ng-model="fisatid_model">
+							</div>
+
+							 <div class="col-md-2">
+								</br><p></p>
+								<label><input type="checkbox" ng-model="exist_check_submit_model"/> &nbsp;&nbsp;is issued</label>
+							</div> -->
+						</div><!--row end-->
+
+						<div class="row" ng-show="exist_check_submit_model"> <!--row2 start-->
+							<div class="col-md-4">
+								<label>To Department</label>
+								<input type="text" class="form-control"  ng-model="selectedDept"  typeahead-on-select="deptSelectChanged()" typeahead-min-length="0" uib-typeahead="dept as dept.department_name for dept in depts | filter: $viewValue | orderBy : 'department_name' | limitTo:8" typeahead-select-on-exact="true" placeholder="Department name" typeahead-editable='false' typeahead-no-results="noDepts" ng-click="deptClicked()" ng-blur="deptLostFocus()" ng-disabled="delButton">
+								<div ng-show="noDepts" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:999;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>To Location</label>
+								<input type="text" class="form-control"  ng-model="selectedLocation"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="location as location.location_name for location in locations | filter: $viewValue | orderBy : 'location_name' | limitTo:8" typeahead-select-on-exact="true" placeholder="Location name" typeahead-editable='false' typeahead-no-results="noLocations" ng-blur="locationLostFocus()" ng-disabled="delButton">
+								<div ng-show="noLocations" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-3" ng-disabled="delButton">
+								<label>Issued Date ( If Any )</label>
+								<adm-dtp ng-model='issued_date_model' options='{ autoClose: true, format: "YYYY-MM-DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }' ></adm-dtp>
+							</div>
+						</div> <!--row2 end-->
+
+						<div class="row"><!--row3 start-->
+							<div class="col-md-12">
+								<label>Warranty to date and Fisat ID(//fitids.length//)</label><br>
+								<div class="chip" style="margin:3px;" ng-repeat="fit in fitids track by $index">
+									//fit.warrantyto// <i class="fa fa-ellipsis-v" style="color:darkgreen;" ng-show="fit.warrantyto != ''"></i> //fit.fitid//
+									<span class="closebtn" ng-click="removeFitId(fit)">&times;</span>
+								</div>
+							</div>
+						</div><!--row3 end-->
+
+						<div class="row"> <!--row4 start-->
+							<div class="col-md-3">
+								<adm-dtp ng-model='warranty_todate_model' options='{ autoClose: true, format: "YYYY-MM-DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+							</div>
+
+							<div class="col-md-3">
+								<input type="text" class="underlined-txtbox" placeholder="Fisat ID" ng-keypress="enterKeyPressed($event)" ng-model="fitid_txtbox_model" ng-disabled="(fitids.length >= exist_qty_model) || (exist_qty_model == 0) || (exist_qty_model == null)">
+							</div>
+						</div> <!--row4 end-->
+						
+						<p></p>
+						<div class="form-group">
+							<button type="button" class="btn btn-info btn-fill" ng-click="existSubmit()">//btnTxt//</button>&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="clearClicked()">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="delButton" ng-click="existDelete()">
+							<p style="float:right;font-weight:bold;" ng-show="checkAvailableStatus()">Remaining to add:&nbsp;//qty_remainingtoadd=selectedItem.qty_remaining_toadd//</p>
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<div class="row"><!--table row-->
+								<div class="col-md-12" style="padding:0px;">
+									<div class="row">
+										<div class="col-md-12" style="padding-bottom:0px;">
+										  <div style=""><!-- padding div start -->
+											<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+												<table class="table hovertable" style="margin-bottom:0px;">
+													<thead>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Item Name</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;" ng-show="exist_check_submit_model"><b style="color:#444;">To Dept</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;" ng-show="exist_check_submit_model"><b style="color:#444;">To Location</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;" ng-show="exist_check_submit_model"><b style="color:#444;">Issue Date</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Fisat ID</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b></b></th>
+													</thead>
+													<tbody>															
+														<tr ng-repeat="detail in all_shown | filter:customFilterForDetails(search_model) | orderBy: 'itemname'" on-finish-render="ngRepeatFinished" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="itemDetailTableRowClicked(detail)" ng-class="{'tab-selected-row': detail.itemdetailsid == selectedDID}">
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>															
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.itemname//</p></td>
+															<td ng-show="exist_check_submit_model"><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.todeptname//</p></td>
+															<td ng-show="exist_check_submit_model"><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.tolocationname//</p></td>
+															<td ng-show="exist_check_submit_model"><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.issuedate//</p></td>
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//detail.fisatid//</p></td>
+
+															<td style="max-width:30px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></td>
+														</tr>
+													</tbody>
+												</table>
+												<!-- NO data msg start-->
+												<div ng-show="loadingPart" style="height:25px;">
+													&nbsp;<i class="fa fa-spinner fa-pulse" style="color:green;"></i> Loading...         
+												</div>
+												<div ng-show="nodataPart" style="height:25px;">
+													&nbsp;//errorMsg//.         
+												</div>
+												<!-- NO data msg end-->
+											</div>
+										  </div><!-- padding div end -->
+										</div><!--col12 end-->						
+									</div>
+								</div><!--col end-->	
+						</div><!--table row end-->			
+					
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,103 @@
+<div ng-controller="locationRegCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Location Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form name="frmLocation">
+						<div class="row">
+							<div class="col-md-5">
+								<div class="form-group">
+									<label>Location Name</label>
+									<input type="text" class="form-control" placeholder="Name" name="location_name_model" ng-model="location_name_model" ng-pattern="/^[a-z A-Z]+$/" required>
+									<span style="color:red;" ng-show="frmLocation.location_name_model.$touched && frmLocation.location_name_model.$error.required">Location name required.</span>
+									<span style="color:red;" ng-show="frmLocation.location_name_model.$dirty && frmLocation.location_name_model.$error.pattern">Only alphabets are required.</span>
+								</div>								
+							</div>
+
+							<div class="col-md-offset-1 col-md-5">
+								<div class="form-group">
+									<label>Select Department</label>
+									<select class="form-control" ng-model="dept_select_model" name="dept_select_model" required>
+										<option ng-repeat="single_dept in depts | orderBy : 'department_name'" value="//single_dept.did//">//single_dept.department_name | uppercase//</option>
+									</select>
+									<span style="color:red;" ng-show="frmLocation.dept_select_model.$touched && frmLocation.dept_select_model.$error.required">Dept required.</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<input type="button" class="btn btn-info btn-fill" value="Submit" ng-click="locationSubmit()" ng-disabled="frmLocation.location_name_model.$invalid || frmLocation.dept_select_model.$invalid">&nbsp;&nbsp;
+							<a href="#home"><input type="button" class="btn btn-info btn-fill" value="Cancel"></a>
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_location_model">
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table table-hover table-striped" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Location Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Department Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="single_location in all_locations | filter: customFilter(search_location_model) | orderBy : 'location_name'" style="border-bottom:2px solid #dddddd;">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+																		<td><p ng-hide="edit_data[single_location.location_id]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_location.location_name//</p><input type="text" class="form-control" ng-show="edit_data[single_location.location_id]" ng-model="single_location.location_name" autofocus /></td>
+
+																		<td>
+																			<p ng-hide="edit_data[single_location.location_id]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_location.department_name//</p>
+																			<select class="form-control" ng-model="single_location.dept_id" ng-show="edit_data[single_location.location_id]" ng-options="single_dept.did as single_dept.department_name for single_dept in depts | orderBy : 'mainstorename'">																	
+																			</select>
+																		</td>
+
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Update"><button type="button" ng-show="edit_data[single_location.location_id]" class="btn btn-info btn-fill" value="Update" ng-click="updaterecord(single_location)" style="float:right;">Update</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Delete"><button type="button" ng-show="edit_data[single_location.location_id]" class="btn btn-info btn-fill" ng-click="locationdelete(single_location)" style="float:right;" value="Delete">Delete</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Cancel"><button type="button" ng-show="edit_data[single_location.location_id]" class="btn btn-info btn-fill" ng-click="stopmodifyrecord(single_location)" value="Cancel" style="float:right;">Cancel</button></a></td>
+
+																		<td style="width:50px;"><p ng-hide="checkeditable(single_location)"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" ng-hide="edit_data[single_location.location_id]" class="btn btn-success btn-circle2" value="Edit" ng-click="modifyrecord(single_location)" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></p></td>
+
+																	</tr>
+																</tbody>
+															</table>
+														</div>	
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->
+
+
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

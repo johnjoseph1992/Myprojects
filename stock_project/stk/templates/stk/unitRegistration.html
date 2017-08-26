@@ -1,0 +1,101 @@
+<div ng-controller="unitRegCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-offset-1 col-md-10 col-md-offset-1">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Unit Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form name="frmUnit">
+						<div class="row">
+							<div class="col-md-3">
+									<div class="form-group">
+										<label>Unit Name</label>
+										<input type="text" class="form-control" placeholder="Name" name="unit_name_model" ng-model="unit_name_model" ng-pattern="/^[a-z A-Z]+$/" required>
+										<span style="color:red;" ng-show="frmUnit.unit_name_model.$touched && frmUnit.unit_name_model.$error.required">Unit name required.</span>
+										<span style="color:red;" ng-show="frmUnit.unit_name_model.$dirty && frmUnit.unit_name_model.$error.pattern">Only alphabets are required.</span>
+									</div>								
+							</div>
+
+							<div class="col-md-offset-1 col-md-3">
+								<div class="form-group">
+									<label>No of contents if any</label>
+									<input type="number" min="1" class="form-control" placeholder="Contents" name="no_of_contents_model" ng-model="no_of_contents_model" required>
+									<span style="color:red;" ng-show="frmUnit.no_of_contents_model.$touched && frmUnit.no_of_contents_model.$error.required">Unit name required.</span>
+									<span style="color:red;" ng-show="frmUnit.no_of_contents_model.$dirty && frmUnit.no_of_contents_model.$error.number">Only digits are required.</span>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<input type="button" class="btn btn-info btn-fill" value="Submit" ng-click="unitSubmit()" ng-disabled="frmUnit.unit_name_model.$invalid || frmUnit.no_of_contents_model.$invalid">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="clearClicked()">
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_unit_model">
+								</div>
+							</div>
+						</div>
+						
+						<div class="row"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table table-hover table-striped" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Unit Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">No of Contents</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>
+																	<tr ng-repeat="single_unit in all_units | filter: customFilter(search_unit_model) | orderBy : 'unit_name'" style="border-bottom:2px solid #dddddd;">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+																		<td><p ng-hide="edit_data[single_unit.unit_id]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//single_unit.unit_name//</p><input type="text" class="form-control" ng-show="edit_data[single_unit.unit_id]" ng-model="single_unit.unit_name" autofocus /></td>
+
+																		<td>
+																			<p ng-hide="edit_data[single_unit.unit_id]" style="font-size: 14px;overflow:auto;margin:0 0 1px;">//checkContents(single_unit.no_of_contents)//</p><input type="number" min="1" class="form-control" ng-show="edit_data[single_unit.unit_id]" ng-model="single_unit.no_of_contents" autofocus />	
+																		</td>
+
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Update"><button type="button" ng-show="edit_data[single_unit.unit_id]" class="btn btn-info btn-fill" value="Update" ng-click="updaterecord(single_unit)" style="float:right;">Update</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Delete"><button type="button" ng-show="edit_data[single_unit.unit_id]" class="btn btn-info btn-fill" ng-click="locationdelete(single_unit)" style="float:right;" value="Delete">Delete</button></a></td>
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Cancel"><button type="button" ng-show="edit_data[single_unit.unit_id]" class="btn btn-info btn-fill" ng-click="stopmodifyrecord(single_unit)" value="Cancel" style="float:right;">Cancel</button></a></td>
+
+																		<td style="width:50px;"><p ng-hide="checkeditable(single_unit)"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" ng-hide="edit_data[single_unit.unit_id]" class="btn btn-success btn-circle2" value="Edit" ng-click="modifyrecord(single_unit)" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></p></td>
+
+																	</tr>
+																</tbody>
+															</table>
+														</div>	
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->
+
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>
+

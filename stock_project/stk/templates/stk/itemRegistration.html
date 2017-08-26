@@ -1,0 +1,204 @@
+<style>
+
+</style>
+<div ng-controller="itemRegCtrl">
+	<div class="row fadeineffect"><!--ROW1 START-->
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+							<h4 class="title">Item Registration</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showItemBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form>
+						<div class="row">
+							<div class="col-md-12">
+								<p ng-hide="true">//selected_item_id// //selected_brand_id// //selected_model_id//</p>
+								<div class="row">
+									<div class="col-md-4">
+										<label>Item Type</label>
+										<select class="form-control" ng-model="type_select_submit_model" ng-click="itemTypeSelected()" ng-options="single_maincat.maincat_id as single_maincat.maincat_name for single_maincat in maincats | orderBy : 'maincat_name'">																	
+										</select>	
+									</div>
+									<div class="col-md-4">
+										<div class="">
+											<label>Brand Name</label>
+        									<input type="text" class="form-control"  ng-model="selectedBrand"  typeahead-on-select="brandSelectChanged()" typeahead-min-length="0" uib-typeahead="brand as brand.brand_name for brand in all_brands | filter: customFilterForBrand($viewValue)| limitTo:8" typeahead-select-on-exact="true" ng-change="brandTextChanged()" placeholder="Brand name">
+											<!--angu alt st
+											<div angucomplete-alt placeholder="Search countries" maxlength="50" pause="100" selected-object="brandSelectChanged" local-data="all_brands" search-fields="brand_name,brand_code" title-field="brand_name" minlength="0" input-class="form-control form-control-small" match-class="highlight" input-changed="brandSearchChange">
+										  	</div><p>//track_brand_selection//</p>-->
+											<!--angu alt end-->
+
+											<!--md autocomplete start
+											  <md-autocomplete md-selected-item="selectedBrand"  md-search-text="searchBrandText" md-items="brand in all_brands | filter: customFilterForBrand(searchBrandText)" md-item-text="brand.brand_name" placeholder="Brand name" md-min-length="0" md-match-case-insensitive = "true" md-select-on-match ="true" md-selected-item-change = "brandSelectChanged(selectedBrand)" md-search-text-change = "brandSearchChange()">   		<md-item-template><span md-highlight-text="searchBrandText">//brand.brand_name// (//brand.brand_code//)</span>
+												</md-item-template>
+	<md-not-found> No matches found for "//searchBrandText//". </md-not-found> </md-autocomplete>--> <!-- <p>//searchText//</p></br><p>//selectedBrand//</p> --> <!--md autocomplete end-->
+										</div>
+									</div>
+									<div class="col-md-4" style="padding-top:0px;">
+										<div class="row">
+											<div class="col-md-6">
+												<label>Brand Code</label>
+												<input type="text" class="form-control" placeholder="Brand code" ng-model="bcode_submit_model" ng-disabled="bcode_disabled">
+											</div>
+											<div class="col-md-6">
+												<label>Model Code</label>
+												<input type="text" class="form-control" placeholder="Model code" ng-model="mcode_submit_model">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-4">
+										<label>Model Name</label>
+        								<input type="text" class="form-control" ng-change="onedit()"  ng-model="selectedModel" typeahead-min-length="0" uib-typeahead="model as model.model_name for model in all_models | filter: $viewValue | limitTo:8" typeahead-select-on-exact="true" typeahead-on-select="modelSelectChanged()" typeahead-select-on-exact="true" ng-click="myclick()" placeholder="Model name">
+									</div>
+									<div class="col-md-4" style="padding-top:0px;">
+										<div class="row">
+											<div class="col-md-6">
+												<label>Select Unit</label>
+												<select class="form-control" ng-model="unit_select_submit_model" ng-options="single_unit.unit_id as single_unit.unit_name for single_unit in units | orderBy : 'unit_name'">																	
+												</select>
+											</div>
+											<div class="col-md-6">
+												<label>Quantity Existing</label>
+												<input type="number" class="form-control" placeholder="Quantity" min="0" ng-model="qty_submit_model">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-4" style="padding-top:0px;">
+										<div class="row">
+											<div class="col-md-6">
+												<label>No of Contents</label>
+												<input type="number" class="form-control" placeholder="Contents" min="0" ng-model="contents_submit_model">
+											</div>
+											<div class="col-md-6">
+												<label>Select Subcategory</label>
+												<select class="form-control" ng-model="subcat_select_submit_model" ng-options="single_subcat.subcat_id as single_subcat.subcat_name for single_subcat in subcats | orderBy : 'subcat_name'">																	
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-4">
+										<div class="">
+											<label>Product Info</label>
+											<textarea rows="2" style="resize:none;" class="form-control" placeholder="Product info" ng-model="info_submit_model">
+											</textarea>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="">
+											<label>Remarks</label>
+											<textarea rows="2" style="resize:none;" class="form-control" placeholder="Remarks" ng-model="remark_submit_model">
+											</textarea>
+										</div>
+									</div>
+									<div class="col-md-4">
+										<div class="">
+											<label>Specification</label>
+											<input type="text" class="form-control" placeholder="Specification" ng-model="spec_submit_model">
+										</div>
+										<div class="row">
+												</br>
+												<label class="">
+											    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" ng-model="subitem_check_submit_model"/> &nbsp;&nbsp;Whether Subitem</label>
+										</div>
+									</div>
+								</div>
+								
+	
+								<div class="form-group">
+									<button type="button" class="btn btn-info btn-fill" ng-click="itemSubmit()">//btnTxt//</button>&nbsp;&nbsp;
+									<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="cancelClicked()">&nbsp;&nbsp;
+									<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="delButton" ng-click="itemDelete()">&nbsp;&nbsp;
+									<input type="button" class="btn btn-info btn-fill" value="Back" ng-show="showItemBack" ng-click="backToPrevous()">&nbsp;&nbsp;
+								</div>
+							</div>
+						</div>
+					
+						<div class="row">
+							<div class="col-md-1">
+								</br>
+								<a data-toggle="tooltip" data-placement="bottom" title="Print"><button type="button" class="btn btn-success btn-circle btn-md" value="Edit" ng-click="openPrintPopupWindow()" style="float:left;"><i class="material-icons">print</i></button></a>
+							</div>
+
+							<div class="col-md-1">
+								</br>
+								<a data-toggle="tooltip" data-placement="bottom" title="PDF"><button type="button" class="btn btn-success btn-circle btn-md" value="Edit" ng-click="getPDF()" style="float:left;"><i class="fa fa-file-pdf-o"></i></button></a>
+							</div>
+
+							<div class="col-md-offset-7 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<div class="row" id="itemdetails"><!--table row-->
+											<div class="col-md-12" style="padding:0px;">
+												<div class="row">
+													<div class="col-md-12" style="padding-bottom:0px;">
+													  <div style=""><!-- padding div start -->
+														<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+															<table class="table hovertable" style="margin-bottom:0px;">
+																<thead>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Brand Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Model Name</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Type</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Subcategory</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Qty Existing</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Contents</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b style="color:#444;">Unit</b></th>
+																	<th style="border-bottom:5px solid;font-size: 13px;"><b></b></th>
+																</thead>
+																<tbody>															
+																	<tr ng-repeat="item in (filtereditems=(all_items | filter:customFilterForTableView(search_model) | orderBy: 'brand_name'))" on-finish-render="itemNgRepeatFinished" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="itemTableRowClicked(item)" ng-class="{'tab-selected-row': item.item_id == selectedID}">
+																		<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>
+
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//item.brand_name//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//item.model_name//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//item.maincat_name//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//item.subcat_name//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//item.qty_available//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//item.no_of_contents//</p></td>																		
+																		<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//item.unit_name//</p></td>																		
+
+																		<td style="width:50px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></td>
+																	</tr>
+																</tbody>
+															</table>
+															<!-- NO data msg start-->
+															<div ng-show="loadingPart" style="height:25px;">
+																&nbsp;<i class="fa fa-spinner fa-pulse" style="color:green;"></i> Loading...         
+															</div>
+															<div ng-show="nodataPart" style="height:25px;">
+																&nbsp;//errorMsg//.         
+															</div>
+															<!-- NO data msg end-->
+														</div>
+													  </div><!-- padding div end -->
+													</div><!--col12 end-->						
+												</div>
+											</div><!--col end-->	
+						</div><!--table row end-->		
+
+		            </form>
+		        </div>
+				
+		    </div>
+		</div>
+	</div><!--ROW1 END-->
+
+</div>

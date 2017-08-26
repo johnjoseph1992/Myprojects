@@ -1,0 +1,72 @@
+<html>
+	<fieldset style="border-radius:100px;">
+		<center>EXCEL UPLOAD SUCCESSFUL</center>
+	</fieldset></br>
+	<center>{{headingdata}}</center></br>
+	<center>
+		<div class="content table-responsive table-full-width" >
+			<table border="1">
+				<tr>
+					<th>Sl no</th>
+					<th>Name</th>
+					<th>Age</th>
+					<th>Mark</th>
+				</tr>
+				{% for student in json_students %}
+					<tr>
+						<td> {{ forloop.counter }}</td> <!--it will automatically show serial numbers-->
+						<td> {{ student.name }}</td>
+						<td> {{ student.age }}</td>
+						<td> {{ student.mark }}</td>
+					</tr> 
+				{% endfor %}
+			</table>
+		</div></br>
+		<a style="text-decoration: none;"><input type="button" value="Back" onclick="history.go(-1)"></a>
+	</center>
+	<script>
+		//var new_window_obj = window.self; //get instance of current window
+		//new_window_obj.print();
+	</script>
+
+	<style>
+		th{
+			text-transform: uppercase;
+			color: black;
+			font-weight: 700;
+			padding: 5px;
+			font-size:14px;
+		}
+
+		td{
+			color:black;
+			font-size:14px;
+			padding-left:3px;
+			padding-right:3px;
+			padding-top:3px;
+			padding-bottom:3px;
+		}
+
+		table,th,td{
+			border:1px solid black;
+			border-collapse: collapse;
+		}
+	</style>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

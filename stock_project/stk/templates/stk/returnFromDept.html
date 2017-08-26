@@ -1,0 +1,126 @@
+<div ng-controller="returnFromDeptCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;">
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Return From Department</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showSupplierBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form><span ng-show="false">//selectedItem//</span>
+						<div class="row"> <!--row1 begin-->
+							<div class="col-md-3">
+								<label>From Department</label>
+								<input type="text" class="form-control"  ng-model="selectedDept"  typeahead-on-select="deptSelectChanged()" typeahead-min-length="0" uib-typeahead="dept as dept.department_name for dept in depts | filter: $viewValue | orderBy : 'department_name' | limitTo:8" typeahead-select-on-exact="true" placeholder="Department name" typeahead-editable='false' typeahead-no-results="noDepts" ng-blur="deptLostFocus()">
+								<div ng-show="noDepts" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:999;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<label>Item</label>
+								<input type="text" class="form-control"  ng-model="selectedItem"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="item as item.fisatid  +' (' + item.itemname + ')' for item in all_issueditems | filter: $viewValue | orderBy : 'fisatid' | limitTo:12" typeahead-select-on-exact="true" ng-change="" placeholder="Item" typeahead-editable='false' typeahead-no-results="noItems" ng-blur="itemLostFocus()" typeahead-loading="itemLoading" ng-click="itemClicked()"> <i class="fa fa-spinner fa-pulse txt-load-icon" style="color:green;" ng-show="itemFetching || itemLoading"></i> <!--if fetching or loading-->
+								<div ng-show="noItems" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:93%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No Data Found.
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<label>Remarks</label>
+								<input type="text" class="form-control"  ng-model="remarks_model" placeholder="Remarks">
+							</div>
+
+							<div class="col-md-1">
+								<label>Returnedby</label>
+								<input type="text" class="form-control"  ng-model="selectedEmp"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="emp as emp.empcode for emp in all_emps | filter: $viewValue | orderBy : 'empcode' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Empcode" typeahead-editable='false' typeahead-no-results="noEmps" ng-blur="empLostFocus()" style="padding-left:4px;padding-right:3px;">
+								<div ng-show="noEmps" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:100%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No data.
+								</div>
+							</div>
+
+							<div class="col-md-2">
+								<label>Current Status</label>
+								<select class="form-control" ng-model="status_model" ng-options="single_healthstatus.healthstatusid as single_healthstatus.healthstatusvalue for single_healthstatus in healthstatusarray | orderBy : 'healthstatusvalue'">
+								</select>
+							</div>
+						</div> <!--row1 end-->
+
+						<div class="row" style="padding-left: 15px;padding-right: 15px;font-weight:600;" ng-if="false"><!--itemdetails row start-->
+							<div class="col-md-12 chip" style="padding-top:0px;padding-bottom:0px;border-radius:0px;">
+								//selectedItem//
+							</div>
+						</div> <!--itemdetails row end-->
+
+						<p></p>
+						<div class="form-group">
+							<button type="button" class="btn btn-info btn-fill" ng-click="returnDeptSubmit()">//btnTxt//</button>&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="clearClicked()">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="delButton" ng-click="returnDeptDelete()">
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<span ng-show="false">//selectedreturn_obj//</span>
+						<div class="row"><!--table row-->
+								<div class="col-md-12" style="padding:0px;">
+									<div class="row">
+										<div class="col-md-12" style="padding-bottom:0px;">
+										  <div style=""><!-- padding div start -->
+											<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+												<table class="table hovertable" style="margin-bottom:0px;">
+													<thead>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Return Date</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Item Name</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">From</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Returnedby</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Fisat ID</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b></b></th>
+													</thead>
+													<tbody>															
+														<tr ng-repeat="singlereturn in all_returns | filter:customFilterForReturnDept(search_model) | orderBy: 'returndate'" on-finish-render="ngRepeatFinished" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="returnDeptTableRowClicked(singlereturn)" ng-class="{'tab-selected-row': singlereturn.returnid == selectedRID}">
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>															
+															<td><p style="max-width:85px;font-size: 14px;overflow:auto;margin:0 0 1px;">//singlereturn.returndate//</p></td>
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//singlereturn.itemname//</p></td>
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//singlereturn.fromdeptname// (//singlereturn.fromlocationname//)</p></td>
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//singlereturn.returnedbyname// (//singlereturn.returnedbyid//)</p></td>
+															<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//singlereturn.fisatid//</p></td>
+
+															<td style="max-width:30px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></td>
+														</tr>
+													</tbody>
+												</table>
+												<!-- NO data msg start-->
+												<div ng-show="loadingPart" style="height:25px;">
+													&nbsp;<i class="fa fa-spinner fa-pulse" style="color:green;"></i> Loading...         
+												</div>
+												<div ng-show="nodataPart" style="height:25px;">
+													&nbsp;//errorMsg//.         
+												</div>
+												<!-- NO data msg end-->
+											</div>
+										  </div><!-- padding div end -->
+										</div><!--col12 end-->						
+									</div>
+								</div><!--col end-->	
+						</div><!--table row end-->			
+					
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>

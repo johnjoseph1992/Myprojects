@@ -1,0 +1,155 @@
+//product reg ctrl begin...
+		app.controller("productRegCtrl", function($scope, $http, $window, $sce) {
+
+			$scope.brand_details = [];			
+
+			//manage tabs start...
+			$scope.registerBrandPart=true;
+			$scope.viewAndUpdatePart=false;
+	
+			$scope.registerTabClicked = function(){
+				$scope.registerBrandPart=true;
+				$scope.viewAndUpdatePart=false;
+			}
+
+			$scope.viewTabClicked = function(){
+				$scope.registerBrandPart=false;
+				$scope.viewAndUpdatePart=true;
+			}
+			//manage tabs end...
+
+			//initially load view table to show all brands...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/searchBrand/",
+					params: {filter: "ALL", keyword:""}
+
+				  }).then(function mySucces(response) {
+						$scope.brand_details = response.data.BrandDetails;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			//loading end...
+
+
+			//load the selectbox with MainCategory names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainCategory/"
+				}).then(function mySucces(response) {
+					$scope.main_cat_names = response.data.MainCategory;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with SubCategory names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSubCategory/"
+				}).then(function mySucces(response) {
+					$scope.sub_cat_names = response.data.SubCategory;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with Unit names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadUnits/"
+				}).then(function mySucces(response) {
+					$scope.unit_names = response.data.Units;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+
+			//submiting a new brand...
+			$scope.submitNewBrand = function(){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/brandRegistration/",
+					params: {brand_name: $scope.brand_name_model, model_name: $scope.model_name_model, selected_unit: $scope.select_unit_model, specification: $scope.specification_model, quantity: $scope.quantity_model, main_category: $scope.select_main_cat_model, sub_category: $scope.select_sub_cat_model, product_info: $scope.product_info_model,capacity: $scope.capacity_model}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						if(response.data == "success"){
+							document.getElementById("modalHead").innerHTML = "Success";
+							document.getElementById("modalBody").innerHTML = "Data Saved Successfully.";
+							$("#showModal").modal();
+						}
+						else{
+							document.getElementById("modalHead").innerHTML = "Failed";
+							document.getElementById("modalBody").innerHTML = response.data;
+							$("#showModal").modal();
+						}
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			}
+
+
+			$scope.searchBrand = function(filter_by,search_keyword){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/searchBrand/",
+					params: {filter: filter_by, keyword:search_keyword}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						$scope.brand_details = response.data.BrandDetails;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			}
+
+
+
+			//function to get pdf...
+			$scope.getPrint = function(){
+				//alert();
+				var json_brands=angular.toJson($scope.brand_details);
+				$window.open("http://stock.fisat.edu:8000/stockapp/brandDetailsPdf/?json_brands="+ json_brands);
+				/*$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/brandDetailsPdf/"
+
+				  }).then(function mySucces(response) {
+					var file = new Blob([response],{type: 'application/pdf'});
+					var fileURL = URL.createObjectURL(file);
+					alert(fileURL.toString());
+					$window.open(fileURL);	
+					}, function myError(response) {
+				});*/
+
+			}
+			//get pdf end...
+
+
+		});//product reg ctrl end...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

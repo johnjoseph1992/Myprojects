@@ -1,0 +1,63 @@
+//product reg ctrl begin...
+		app.controller("productRegCtrl", function($scope, $http) {
+
+
+			//load the selectbox with MainCategory names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainCategory/"
+				}).then(function mySucces(response) {
+					$scope.main_cat_names = response.data.MainCategory;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with SubCategory names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSubCategory/"
+				}).then(function mySucces(response) {
+					$scope.sub_cat_names = response.data.SubCategory;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with Unit names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadUnits/"
+				}).then(function mySucces(response) {
+					$scope.unit_names = response.data.Units;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+
+			//submiting a new brand...
+			$scope.submitNewBrand = function(){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/brandRegistration/",
+					params: {brand_name: $scope.brand_name_model, model_name: $scope.model_name_model, selected_unit: $scope.select_unit_model, specification: $scope.specification_model, quantity: $scope.quantity_model, main_category: $scope.select_main_cat_model, sub_category: $scope.select_sub_cat_model, product_info: $scope.product_info_model,capacity: $scope.capacity_model}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						if(response.data == "success"){
+							document.getElementById("modalHead").innerHTML = "Success";
+							document.getElementById("modalBody").innerHTML = "Data Saved Successfully.";
+							$("#showModal").modal();
+						}
+						else{
+							document.getElementById("modalHead").innerHTML = "Failed";
+							document.getElementById("modalBody").innerHTML = response.data;
+							$("#showModal").modal();
+						}
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			}
+
+		});//product reg ctrl end...

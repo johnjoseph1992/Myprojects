@@ -1,0 +1,85 @@
+app.controller("adminHomeCtrl", function($scope,$http,$interval) {
+		
+		$scope.home_data = [];
+
+		//intially refresh the controls with the retrieved data on every specified delay time... 
+		$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/refreshAdminHome/"
+				}).then(function mySucces(response) {
+					$scope.home_data = response.data.AdminHomeData;
+					//alert($scope.home_data[0].main_store_count);
+					$scope.main_store_count_var = $scope.home_data[0].main_store_count;
+					$scope.dept_count_var = $scope.home_data[0].dept_count;
+
+					$scope.supplier_count_var = $scope.home_data[0].supplier_count;
+					$scope.brand_count_var = $scope.home_data[0].brand_count;
+					$scope.item_count_var = $scope.home_data[0].item_count;
+					$scope.external_purchase_count_var = $scope.home_data[0].external_purchase_count;
+					$scope.total_quotation_count_var = $scope.home_data[0].total_quotation_count;
+					$scope.selected_quotation_count_var = $scope.home_data[0].selected_quotation_count;
+					
+				}, function myError(response) {
+
+		});//refreshing end...
+
+
+		$interval(function () {
+     			
+			//refresh the controls with the retrieved data on every specified delay time... 
+			$http({
+						method : "GET",
+						url : "http://stock.fisat.edu:8000/stockapp/refreshAdminHome/"
+					}).then(function mySucces(response) {
+						$scope.home_data = response.data.AdminHomeData;
+						//alert($scope.home_data[0].main_store_count);
+						$scope.main_store_count_var = $scope.home_data[0].main_store_count;
+						$scope.dept_count_var = $scope.home_data[0].dept_count;
+
+						$scope.supplier_count_var = $scope.home_data[0].supplier_count;
+						$scope.brand_count_var = $scope.home_data[0].brand_count;
+						$scope.item_count_var = $scope.home_data[0].item_count;
+						$scope.external_purchase_count_var = $scope.home_data[0].external_purchase_count;
+						$scope.total_quotation_count_var = $scope.home_data[0].total_quotation_count;
+						$scope.selected_quotation_count_var = $scope.home_data[0].selected_quotation_count;
+						//alert(response.data);
+					}, function myError(response) {
+
+			});//refreshing end...
+
+  		}, 6000);
+	
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

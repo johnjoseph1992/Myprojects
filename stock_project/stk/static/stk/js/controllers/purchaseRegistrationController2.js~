@@ -1,0 +1,298 @@
+//controller for purchase Registration...
+		app.controller("purchaseRegistrationCtrl", function($scope, $http, $window) {
+			$scope.showIfConsumableDiv=true;
+			$scope.showIfAssetDiv=false;
+			$scope.showIfConsumableAssembledNotExist=false;
+			$scope.showIfExisting=false;
+			$scope.moveItemTablePart=false;
+
+			//manage tabs...
+			$scope.recordItemPart=true;
+			$scope.productDetailsPart=false;
+			$scope.productMovementPart=false;
+
+			$scope.recordItemTabClicked = function(){
+				$scope.recordItemPart=true;
+				$scope.productDetailsPart=false;
+				$scope.productMovementPart=false;
+			}
+
+			$scope.productDetailsTabClicked = function(){
+				$scope.recordItemPart=false;
+				$scope.productDetailsPart=true;
+				$scope.productMovementPart=false;
+			}
+
+			$scope.productMovementTabClicked = function(){
+				$scope.recordItemPart=false;
+				$scope.productDetailsPart=false;
+				$scope.productMovementPart=true;
+
+				//load the selectbox with Department names...
+				$http({
+						method : "GET",
+						url : "http://stock.fisat.edu:8000/stockapp/loadDeptNames/"
+					}).then(function mySucces(response) {
+						$scope.all_depts = response.data.Dept;
+					}, function myError(response) {
+
+				});//loading selectbox end...
+			}
+			//manage tabs end...
+
+			//initially load all item details to table...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/searchItems/",
+					params: {filter: "ALL", keyword:""}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						$scope.item_details = response.data.ItemMasterContent;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			//loading end...
+
+
+			//load the selectbox with MainCategory names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadMainCategory/"
+				}).then(function mySucces(response) {
+					$scope.main_cat_names = response.data.MainCategory;
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+			//load the selectbox with Brand Details...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadBrandDetails/"
+				}).then(function mySucces(response) {
+					$scope.brand_details = response.data.BrandDetails;
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with supplier Names...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadSupplierNames/"
+				}).then(function mySucces(response) {
+					$scope.all_suppliers = response.data.Supplier;
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+			//load the selectbox with item_id and fisat_id...
+			$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/loadItemNames/"
+				}).then(function mySucces(response) {
+					$scope.all_items = response.data.ItemMaster;
+					//alert(response.data);
+				}, function myError(response) {
+
+				});//loading selectbox end...
+
+
+
+			//show parts depends on whether Asset or Consumable....
+			$scope.switchMainCategory = function(){
+				if($scope.select_maincategory_model == "1"){ //consumable ...
+					//$scope.showIfConsumableDiv=true;
+					$scope.showIfAssetDiv=false;
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+				if($scope.select_maincategory_model == "2"){ //assets ...
+					$scope.showIfAssetDiv=true;
+					//$scope.showIfConsumableDiv=false;
+					$scope.showIfConsumableAssembledNotExist=false;
+					
+					//for proper vallidation...
+					if(($scope.Assembled == "Yes") && ($scope.Existing == "No")){
+						$scope.showIfConsumableAssembledNotExist=true;
+					}
+					else{
+						$scope.showIfConsumableAssembledNotExist=false;
+					}
+				}
+			}
+			
+			//show consumable parts depends on whether Assembled and not Existing....
+			$scope.checkForAssembledNotExist = function(){
+				if($scope.Existing == "No"){
+					$scope.showIfExisting=true;
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+				else{
+					$scope.showIfExisting=false;
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+				if(($scope.Assembled == "Yes") && ($scope.Existing == "No") && ($scope.select_maincategory_model == "2")){
+					$scope.showIfConsumableAssembledNotExist=true;
+				}
+				else{
+					$scope.showIfConsumableAssembledNotExist=false;
+				}
+			}
+			
+			
+			//Add items if Consumable Assembled and Not Existing....
+			$scope.items = [];
+			$scope.addItem = function () {
+				$scope.errortext = "";
+				if (!$scope.addMe) {return;}
+				if ($scope.items.indexOf($scope.addMe.toUpperCase()) == -1) {
+					$scope.items.push($scope.addMe.toUpperCase());
+				} else {
+					$scope.errortext = "Location Already Present";
+				}
+			}
+			$scope.removeItem = function (x) {
+				$scope.errortext = "";    
+				$scope.items.splice(x, 1);
+			}
+
+			//click submit button...
+			$scope.submitPurchasedItem = function () {	
+				var jsonAssembledSubItems=angular.toJson($scope.items);
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/submitPurchasedItem/",
+					params: {brand_id: $scope.select_brand_name_model,main_cat_id: $scope.select_maincategory_model, qty_available:$scope.nos_available_model,item_name_description: $scope.item_desc_model,assembled: $scope.Assembled,existing: $scope.Existing,purchase_date: $scope.purch_date_model,supplier_id: $scope.supp_name_model,assembled_sub_items: jsonAssembledSubItems, total_price: $scope.tot_price_model}
+
+				  }).then(function mySucces(response) {
+						if(response.data == "success"){
+							alert("Data saved successfully");
+						}
+						else{
+							alert(response.data);
+						}
+					});
+			}//button click end
+
+
+			//searching begin...
+			$scope.searchItems = function(filter_by,search_keyword){
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/searchItems/",
+					params: {filter: filter_by, keyword:search_keyword}
+
+				  }).then(function mySucces(response) {
+					 // $scope.myResponse = response.data;
+						$scope.item_details = response.data.ItemMasterContent;
+					}, function myError(response) {
+					 // $scope.myResponse = response.statusText;
+				});
+			}
+			//searching end...
+
+			//retrieving item details from selected fisat_id (selectbox ng-change in movement part)
+			$scope.retrieveItemDetails = function(){
+
+				$scope.moveItemTablePart=true;
+
+				$http({
+						method : "GET",
+						url : "http://stock.fisat.edu:8000/stockapp/retrieveItemDetailsFromFitId/",
+						params: {fit_id: $scope.move_item_model}
+
+					  }).then(function mySucces(response) {
+						 // $scope.myResponse = response.data;
+							$scope.moving_item_details = response.data.ItemMasterContent;
+						}, function myError(response) {
+						 // $scope.myResponse = response.statusText;
+				});
+			}
+			//retrieving end...
+
+			//check whether the dept, location names are blank...
+			$scope.checkIsBlank = function(property_value){
+				if(property_value == ""){
+					return "Unallocated";
+				}
+				else{
+					return property_value;
+				}
+			}
+			//checking end...
+
+			//load related sublocations to select box on the ng-change of dept selectbox...
+			$scope.loadRelatedSublocations = function(){
+				$http({
+						method : "GET",
+						url : "http://stock.fisat.edu:8000/stockapp/loadSubLocationNames/",
+						params: {dept_id: $scope.to_dept_model}
+					}).then(function mySucces(response) {
+						$scope.all_sublocations = response.data.Location;
+					}, function myError(response) {
+
+				});
+			}
+			//loading sublocation end...
+
+			//move item button is clicked...
+			$scope.moveItem = function(){
+
+				$scope.moveItemTablePart=false;
+
+				$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/moveItem/",
+					params: {fisat_id: $scope.move_item_model, dept_id: $scope.to_dept_model, location_id: $scope.to_sublocation_model}
+
+				  	}).then(function mySucces(response) {
+						if(response.data == "success"){
+							alert("Data saved successfully");
+						}
+						else{
+							alert(response.data);
+						}
+				});
+			}
+			//move item end...			
+
+
+			//function to get pdf...
+			$scope.getPrint = function(){
+				//alert();
+				var json_items=angular.toJson($scope.item_details);
+				$window.open("http://stock.fisat.edu:8000/stockapp/itemDetailsPdf/?json_items="+ json_items);
+				/*$http({
+					method : "GET",
+					url : "http://stock.fisat.edu:8000/stockapp/brandDetailsPdf/"
+
+				  }).then(function mySucces(response) {
+					var file = new Blob([response],{type: 'application/pdf'});
+					var fileURL = URL.createObjectURL(file);
+					alert(fileURL.toString());
+					$window.open(fileURL);	
+					}, function myError(response) {
+				});*/
+
+			}
+
+
+		});//controller for purchase Registration end...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

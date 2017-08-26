@@ -1,0 +1,190 @@
+<div ng-controller="outgoingCtrl">
+	<div class="row fadeineffect">
+		<div class="col-md-12">
+		    <div class="card" style="box-shadow:none;border-right: 1px solid;border-left: 1px solid;border-bottom: 1px solid;border-top: 1px solid;border-color: #DDD;margin-top:-8px;"> <!--margin-top for properly showing the datepicker-->
+		        <div class="header">
+					<div class="row">
+						<div class="col-md-11">
+		            		<h4 class="title">Outgoing Items</h4>
+						</div>
+						<div class="col-md-1">
+							<a data-toggle="tooltip" data-placement="bottom" title="Close" href="#home"><button type="button" class="btn btn-danger btn-circle-close" style="float:right;" ng-hide="showSupplierBack"><i class="fa fa-times fa-2x"></i></button></a>
+						</div>
+					</div>
+		        </div>
+		        <div class="content" style="padding-bottom:0px;">
+		            <form><span ng-show="false">//selectedItem//</span> <span ng-show="false">//selectedCompany//</span>
+						<!--<div class="row"> row0 begin
+							<div class="col-md-2" style="padding-left:7px;">
+								&nbsp;&nbsp;<label style="color:green;"><input type="radio" ng-model="out_radio_model" ng-value="true">&nbsp;Outgoing</label>
+							</div>
+							
+							<div class="col-md-2">
+								<label style="color:green;"><input type="radio" ng-model="return_radio_model" ng-value="false">&nbsp;Returned</label>
+							</div>
+						</div> row0 end-->
+
+						<div class="row"> <!--row1 begin-->
+							<div class="col-md-3">
+								<label>Item</label>
+								<input type="text" class="form-control"  ng-model="selectedItem"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="item as item.fisatid  +' (' + item.itemname + ')' for item in all_items | filter: $viewValue | orderBy : 'fisatid' | limitTo:12" typeahead-select-on-exact="true" ng-change="" placeholder="Item" typeahead-editable='false' typeahead-no-results="noItems" ng-blur="itemLostFocus()" typeahead-loading="itemLoading" ng-disabled="itemFetching || itemLoading"> <i class="fa fa-spinner fa-pulse txt-load-icon" style="color:green;" ng-show="itemFetching || itemLoading"></i> <!--if fetching or loading-->
+								<div ng-show="noItems" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:91%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No data found.
+								</div>
+							</div>
+
+							<div class="col-md-3">
+								<label>Remarks</label>
+								<input type="text" class="form-control"  ng-model="remarks_model" placeholder="Remarks">
+							</div>
+		
+							<div class="col-md-1">
+								<label>Status</label>
+								<select class="form-control" ng-model="status_model" ng-options="single_healthstatus.healthstatusid as single_healthstatus.healthstatusvalue for single_healthstatus in healthstatusarray | orderBy : 'healthstatusvalue'" style="padding-left:1px;padding-right:0px;">
+								</select>
+							</div>
+
+							<div class="col-md-3">
+								<label>Service Company</label>
+								<input type="text" class="form-control"  ng-model="selectedCompany"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="company as company.companyname for company in companies | filter: $viewValue | orderBy : 'companyname' | limitTo:8" typeahead-select-on-exact="true" placeholder="Service company" typeahead-editable='false' typeahead-no-results="noCompanies" ng-blur="" ng-disabled="new_servicecompanycheck">
+								<div ng-show="noCompanies && !new_servicecompanycheck" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:999;width:94%;height:23px;padding-top: 0px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No data found.
+								</div>
+							</div>
+
+							<div class="col-md-2" style="padding-top:31px;" ng-show="noCompanies && delButton==false">
+								<label><checkbox normal ng-model="new_servicecompanycheck" class="btn-normal" ng-change="checkChanged()"></checkbox>&nbsp;&nbsp;New company</label>
+							</div>
+						</div> <!--row1 end-->
+
+						<div class="row" ng-show="noCompanies && new_servicecompanycheck && !delButton"> <!--row2 start-->
+							<div class="col-md-12">
+								<fieldset style="border: 1px solid rgb(221, 221, 221);padding:5px;border-radius: 3px;"> <!--fieldset start-->
+									<legend style="margin-bottom:0px;font-size: 13px;border-bottom:0px;width:auto;color:#cc2b08;text-align:center;">&nbsp;Register new service company&nbsp;</legend>
+										<div class="rows"> <!--inner row start-->
+											<div class="col-md-3" style="padding-top:0px;">
+												<label>Company name</label>
+												<input type="text" class="form-control"  ng-model="name_model" placeholder="Company name">
+											</div>
+
+											<div class="col-md-3" style="padding-top:0px;">
+												<label>Mail ID</label>
+												<input type="text" class="form-control"  ng-model="mail_model" placeholder="Mail ID">
+											</div>
+
+											<div class="col-md-2" style="padding-top:0px;">
+												<label>Phone No</label>
+												<input type="number" class="form-control"  ng-model="phone_model" placeholder="Phone no" style="padding-right: 1px;">
+											</div>
+
+											<div class="col-md-4" style="padding-top:0px;">
+												<label>Address</label>
+												<input type="text" class="form-control"  ng-model="addr_model" placeholder="Address">
+											</div>
+										</div> <!--inner row end-->
+									</legend>
+								</fieldset>
+							</div>
+						</div> <!--row2 end-->
+
+						<div class="row"> <!--row3 begin-->
+							<div class="col-md-5">
+								<label>Technician name</label>
+								<input type="text" class="form-control"  ng-model="technician_model" placeholder="Technician name">
+							</div>
+
+							<div class="col-md-5">
+								<label>Complaints</label>
+								<input type="text" class="form-control"  ng-model="complaints_model" placeholder="Complaints">
+							</div>
+						</div> <!--row3 end-->
+
+						<div class="row" ng-show="delButton"> <!--row4 start-->
+							<div class="col-md-3">
+								<label>Returned Date</label>
+								<adm-dtp ng-model='returned_date_model' options='{ autoClose: true, format: "YYYY-MM-DD", default: today, multiple:false, dtpType: "date", freezeInput:true, transition:false }'></adm-dtp>
+							</div>
+
+							<div class="col-md-3">
+								<label>Item Receiver</label>
+								<input type="text" class="form-control"  ng-model="selectedEmp"  typeahead-on-select="" typeahead-min-length="0" uib-typeahead="emp as emp.empcode for emp in all_emps | filter: $viewValue | orderBy : 'empcode' | limitTo:8" typeahead-select-on-exact="true" ng-change="" placeholder="Item receiver" typeahead-editable='false' typeahead-no-results="noEmps" ng-blur="empLostFocus()">
+								<div ng-show="noEmps" style="background:white;box-shadow:0px 0px 2px;position:absolute;z-index:1000;width:91%;height:23px;padding-top: 1px;padding-left: 8px;border-radius: 3px;">
+									<i class="glyphicon glyphicon-remove" style="color:#4C4C4C;"></i> No data found.
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>Maintenance Details</label>
+								<input type="text" class="form-control"  ng-model="maintenance_details_model" placeholder="Maintenance Details">
+							</div>
+						</div> <!--row4 end-->
+
+						<p></p>
+						<div class="form-group">
+							<button type="button" class="btn btn-info btn-fill" ng-click="outgoingSubmit()">//btnTxt//</button>&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Clear" ng-click="clearClicked()">&nbsp;&nbsp;
+							<input type="button" class="btn btn-info btn-fill" value="Delete" ng-show="delButton" ng-click="outgoingDelete()">
+						</div>
+
+						<div class="row">
+							<div class="col-md-offset-9 col-md-3">
+								<div>
+									<label>Search</label>
+									<input type="text" class="form-control" placeholder="Enter Keyword" ng-model="search_model">
+								</div>
+							</div>
+						</div>
+
+						<span ng-show="true">//selectedoutgoing_obj//</span>
+						<div class="row"><!--table row-->
+								<div class="col-md-12" style="padding:0px;">
+									<div class="row">
+										<div class="col-md-12" style="padding-bottom:0px;">
+										  <div style=""><!-- padding div start -->
+											<div class="content table-responsive table-full-width" style="padding-bottom:0px;">
+												<table class="table hovertable" style="margin-bottom:0px;">
+													<thead>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sl No</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sentdate</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Receiveddate</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Sendername</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Itemname</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Company Name</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b style="color:#444;">Fisat ID</b></th>
+														<th style="border-bottom:3px solid;font-size: 13px;"><b></b></th>
+													</thead>
+													<tbody>															
+														<tr ng-repeat="outgoing in all_outgoings | filter:customFilterForOutgoing(search_model) | orderBy: 'datedispatch'" on-finish-render="ngRepeatFinished" style="border-bottom:0px solid #dddddd;position:inherit;cursor:pointer;" ng-click="outgoingTableRowClicked(outgoing)" ng-class="{'tab-selected-row': outgoing.itemoutgoingid == selectedOID}">
+															<td><p style="font-size: 14px;overflow:auto;margin:0 0 1px;">//$index + 1//</p></td>															
+															<td><p style="max-width:85px;font-size: 14px;overflow:auto;margin:0 0 1px;">//outgoing.datedispatch//</p></td>
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//checkReturnDate(outgoing.datereturn)//</p></td>
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//outgoing.itemsendername//</p></td>
+															<td><p style="max-width:200px;font-size: 14px;overflow:auto;margin:0 0 1px;">//outgoing.itemname//</p></td>
+															<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//outgoing.companyname//</p></td>
+															<td><p style="max-width:100px;font-size: 14px;overflow:auto;margin:0 0 1px;">//outgoing.fisatid//</p></td>
+
+															<td style="max-width:30px;"><a data-toggle="tooltip" data-placement="bottom" title="Edit"><button type="button" class="btn btn-success btn-circle2" value="Edit" ng-click="" style="float:right;"><i class="fa fa-pencil-square-o"></i></button></a></td>
+														</tr>
+													</tbody>
+												</table>
+												<!-- NO data msg start-->
+												<div ng-show="loadingPart" style="height:25px;">
+													&nbsp;<i class="fa fa-spinner fa-pulse" style="color:green;"></i> Loading...         
+												</div>
+												<div ng-show="nodataPart" style="height:25px;">
+													&nbsp;//errorMsg//.         
+												</div>
+												<!-- NO data msg end-->
+											</div>
+										  </div><!-- padding div end -->
+										</div><!--col12 end-->						
+									</div>
+								</div><!--col end-->	
+						</div><!--table row end-->			
+					
+		            </form>
+		        </div>
+		    </div>
+		</div>
+	</div>
+</div>
